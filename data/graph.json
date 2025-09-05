@@ -161,8 +161,7 @@
 
     { "id": "peter-thiel", "name": "Peter Thiel", "address": "Miami, FL", "notes": "Major Trump supporter financially and operationally." },
     { "id": "elon-musk", "name": "Elon Musk", "address": "Austin, TX", "notes": "Major Trump supporter." },
-    { "id": "mark-zuckerberg", "name": "Mark Zuckerberg", "address": "1601 Willow Rd, Menlo Park, CA 94025", "notes": "Major Trump supporter."}
-
+    { "id": "mark-zuckerberg", "name": "Mark Zuckerberg", "address": "1601 Willow Rd, Menlo Park, CA 94025", "notes": "Major Trump supporter." },
 
     { "id": "vivek", "name": "Vivek Ramaswamy", "address": "Dallas, TX", "notes": "Major Trump supporter." },
     { "id": "roivant", "name": "Roivant Sciences (as investor)", "address": "151 W 42nd St, New York, NY 10036", "notes": "Owns 57% of IMVT." },
@@ -219,7 +218,7 @@
     { "investor_id": "vivek", "company_id": "ROIV", "units": 37284108, "instrument": "Shares" },
 
     { "investor_id": "bam", "company_id": "IMVT", "units": 197569, "instrument": "Shares" },
-    { "investor_id": "roivant", "company_id": "IMVT", "units": 96650341, "instrument": "Shares" }
+    { "investor_id": "roivant", "company_id": "IMVT", "units": 96650341, "instrument": "Shares" },
     { "investor_id": "alpine", "company_id": "IMVT", "units": 2626692, "instrument": "Shares" },
 
     { "investor_id": "vivek", "company_id": "BZFD", "units": 3129797, "instrument": "Shares" },

@@ -4,178 +4,420 @@
       "id": "NG",
       "ticker": "NG",
       "name": "NOVAGOLD RESOURCES INC.",
-      "address": "PO Box 69, Crooked Creek, AK 99575",
+      "lat": 61.593,
+      "lng": -158.116,
+      "address": "Crooked Creek, AK",
       "desc": "A goldmine in Alaska",
-      "long_short": "Coming Soon",
-      "why": "Investors are likely going to use Trump to get federal funds to build the mine, relax federal restrictions on building the mine, and/or use the potential of the mine as a pump and dump."
+      "Potential QPQ": "Investors are likely going to use Trump to get federal funds to build the mine, relax federal restrictions on building the mine, and/or use the potential of the mine as a pump and dump."
     },
     {
       "id": "RDW",
       "ticker": "RDW",
-      "name": "REDWIRE CORPORATION",
-      "address": "8226 Philips Highway, Suite 102, Jacksonville, FL 32256",
+      "name": "Redwire Corporation",
+      "lat": 30.2055,
+      "lng": -81.5829,
+      "address": "Jacksonville, FL",
       "desc": "Defense Contractor",
-      "long_short": "Long",
-      "why": "Investors are likely looking to get defense contracts around the Golden Dome."
+      "Potential QPQ": "Investors are likely looking to get defense contracts around the Golden Dome."
     },
     {
       "id": "QXO",
       "ticker": "QXO",
       "name": "QXO, INC.",
-      "address": "Five American Lane, Greenwich, CT 06831",
+      "lat": 25.7617,
+      "lng": -80.1918,
+      "address": "Miami, FL",
       "desc": "Construction Companies",
-      "why": "QXO is an investment vehicle with money coming in from foreign companies."
+      "Potential QPQ": "QXO is an investment vehicle with money coming in from foreign companies."
     },
     {
       "id": "BKKT",
       "ticker": "BKKT",
-      "name": "Bakkt Holdings, Inc.",
-      "address": "5900 Windward Parkway, Suite 450, Alpharetta, GA 30005",
+      "name": "Bakkt Holdings",
+      "lat": 34.0754,
+      "lng": -84.2941,
+      "address": "Alpharetta, GA",
       "desc": "Crypto Treasury",
-      "why": "Bakkt is looking to expand as a crypto treasurer listing on multiple exchanges in foreign countries. Likely to see little regulation."
+      "Potential QPQ": "Bakkt is looking to expand as a crypto treasurer listing on multiple exchanges in foreign countries. Likely to see little regulation."
     },
     {
       "id": "WOLF",
       "ticker": "WOLF",
-      "name": "Wolfspeed, Inc.",
+      "name": "Wolfspeed",
+      "lat": 35.994,
+      "lng": -78.8986,
       "address": "Durham, NC",
       "desc": "Semiconductor",
-      "why": "An American-only semiconductor manufacturer; potential for U.S. government investment."
+      "Potential QPQ": "An American only semiconductor manufacturer. Strong potential for US Gov Investment like INTC."
     },
     {
       "id": "ALTS",
       "ticker": "ALTS",
-      "name": "ALT5 Sigma Corporation",
-      "address": "325 E. Warm Springs Road, Suite 102, Las Vegas, NV 89119",
+      "name": "ALTS",
+      "lat": 25.7907,
+      "lng": -80.13,
+      "address": "Miami Beach, FL",
       "desc": "Crypto Treasury (WLFI)",
-      "why": "The Company buys WLFI (Trump-linked crypto) with proceeds from issuing stock."
+      "Potential QPQ": "The Company buys WLFI, one of Trump's crypto currencies with money from issuing stock."
     },
     {
       "id": "PSQH",
       "ticker": "PSQH",
-      "name": "PSQ Holdings, Inc.",
+      "name": "PSQ Holdings (PublicSquare)",
+      "lat": 26.7153,
+      "lng": -80.0534,
       "address": "West Palm Beach, FL",
       "desc": "Conservative Marketplace",
-      "why": "Could see favorable promotions."
+      "Potential QPQ": "Could see favorable promotions."
     },
     {
       "id": "PLTR",
       "ticker": "PLTR",
-      "name": "Palantir Technologies Inc.",
+      "name": "Palantir Technologies",
+      "lat": 39.7392,
+      "lng": -104.9903,
       "address": "Denver, CO",
       "desc": "Defense Contractor",
-      "why": "Provides major data analytics and defense contracting for the Trump administration in both terms."
+      "Potential QPQ": "Provides major data analytics and defense contracting for the Trump administration in both terms."
     },
     {
       "id": "TSLA",
       "ticker": "TSLA",
       "name": "Tesla, Inc.",
-      "address": "1 Tesla Road, Austin, TX 78725",
+      "lat": 30.2672,
+      "lng": -97.7431,
+      "address": "Austin, TX",
       "desc": "Car Company",
-      "why": "Provides major data analytics and defense contracting for Trump's presidency."
+      "Potential QPQ": "Provides major data analytics and defense contracting for Trump's presidency."
     },
     {
       "id": "META",
       "ticker": "META",
-      "name": "Meta Platforms, Inc.",
-      "address": "1 Hacker Way, Menlo Park, CA 94025",
+      "name": "Meta Platforms",
+      "lat": 37.4549,
+      "lng": -122.1817,
+      "address": "Menlo Park, CA",
       "desc": "Media",
-      "why": "Provides major data analytics and message outreach for the Trump campaign."
+      "Potential QPQ": "Provides major data analytics and message outreach for the Trump campaign"
     },
     {
       "id": "ROIV",
       "ticker": "ROIV",
-      "name": "Roivant Sciences Ltd.",
+      "name": "Roivant Sciences",
+      "lat": 40.758,
+      "lng": -73.9855,
       "address": "New York, NY",
       "desc": "Healthcare",
-      "why": "Could see special treatment by the FDA."
+      "Potential QPQ": "Could see special treatment by the FDA"
     },
     {
       "id": "IMVT",
       "ticker": "IMVT",
       "name": "Immunovant, Inc.",
+      "lat": 40.7549,
+      "lng": -73.984,
       "address": "New York, NY",
       "desc": "Healthcare",
-      "why": "Could see special treatment by the FDA."
+      "Potential QPQ": "Could see special treatment by the FDA"
     },
     {
       "id": "BZFD",
       "ticker": "BZFD",
       "name": "BuzzFeed, Inc.",
+      "lat": 40.74,
+      "lng": -74.002,
       "address": "New York, NY",
       "desc": "Media",
-      "why": "Could see special treatment by the FTC."
+      "Potential QPQ": "Could see special treatment by the FTC"
     },
     {
       "id": "RUM",
       "ticker": "RUM",
       "name": "Rumble Inc.",
-      "address": "Longboat Key, FL",
+      "lat": 27.3364,
+      "lng": -82.5307,
+      "address": "Sarasota, FL",
       "desc": "Hosts Truth Social",
-      "why": "Could see special treatment by the FTC and government."
+      "Potential QPQ": "Could see special treatment by the FTC, gov"
     },
     {
-      "id": "DJT",
-      "ticker": "DJT",
-      "name": "Trump Media & Technology Group",
+      "id": "DJT_DWAC",
+      "ticker": "DJT/DWAC",
+      "name": "Trump Media / DWAC",
+      "lat": 27.3364,
+      "lng": -82.5307,
       "address": "Sarasota, FL",
       "desc": "Crypto Treasurer",
-      "why": "Could see the crypto strategic reserve initiative."
+      "Potential QPQ": "Could see the crypto strategic reserve initiative."
+    },
+    {
+      "id": "UMAC",
+      "ticker": "UMAC",
+      "name": "Unusual Machines, Inc.",
+      "lat": 18.4655,
+      "lng": -66.1057,
+      "address": "San Juan, PR",
+      "desc": "Drones",
+      "Potential QPQ": "An American Drone manufacturer possibly set to receive government contracts."
+    },
+    {
+      "id": "HOND",
+      "ticker": "HOND",
+      "name": "HCM II Acquisition (Energy)",
+      "lat": 29.7604,
+      "lng": -95.3698,
+      "address": "Houston, TX",
+      "desc": "Energy",
+      "Potential QPQ": "Recently received approval by the Energy Department as a qualified reactor company."
+    },
+    {
+      "id": "CEPO_BSTR",
+      "ticker": "CEPO/BSTR",
+      "name": "CEPO / BSTR",
+      "lat": 40.7128,
+      "lng": -74.006,
+      "address": "New York, NY",
+      "desc": "Crypto treasurer",
+      "Potential QPQ": "Could see crypto strategic reserve."
     },
     {
       "id": "ABTC",
       "ticker": "ABTC",
-      "name": "American Bitcoin Corporation",
-      "address": "1101 Brickell Avenue, Suite 1500, Miami, FL 33131",
+      "name": "American Blockchain Corp.",
+      "lat": 36.1699,
+      "lng": -115.1398,
+      "address": "Las Vegas, NV",
       "desc": "Crypto Miner",
-      "why": "A miner for the strategic reserve."
+      "Potential QPQ": "A miner for the strategic reserve."
     },
     {
       "id": "PHM",
       "ticker": "PHM",
       "name": "PulteGroup, Inc.",
-      "address": "3350 Peachtree Rd NE, Suite 150, Atlanta, GA 30326",
+      "lat": 33.8486,
+      "lng": -84.3733,
+      "address": "Atlanta, GA",
       "desc": "Housing Developer",
-      "why": "Could see beneficial housing regulations."
+      "Potential QPQ": "Could see beneficial housing regulations."
     }
   ],
   "investors": [
-    { "id": "ghisallo", "name": "Ghisallo Capital Management LLC", "address": "240 Newbury Street, 2nd Floor, Boston, MA 02116", "notes": "Trump's Secretary of Treasury Bessent seeded this hedge fund." },
-    { "id": "bam", "name": "Balyasny Asset Management L.P.", "address": "303 Colorado Street, Austin, TX 78701", "notes": "Owns several companies with links to Trump and allies." },
-    { "id": "paulson", "name": "PAULSON & CO. INC.", "address": "New York, NY", "notes": "Economic advisor to Trump during first term." },
-
-    { "id": "aei", "name": "AE Industrial Partners (AEI)", "address": "6700 Broken Sound Parkway NW, Suite 100, Boca Raton, FL 33487", "notes": "Owner has close proximity to Mar-a-Lago." },
-    { "id": "hudson-bay", "name": "Hudson Bay Capital Management LP", "address": "55 Hudson Yards, Level 26, New York, NY 10001", "notes": "Owner Sander Gerber is on Donald Trump's intelligence advisory board." },
-    { "id": "hood-river", "name": "Hood River Capital Management LLC", "address": "2373 PGA Boulevard, Suite 200, Palm Beach Gardens, FL 33410", "notes": "Owns several companies with links to Trump and allies." },
-    { "id": "peter-cannito", "name": "Peter Cannito", "address": "Jacksonville, FL", "notes": "RDW CEO; promoted company on Fox News; praised Trump admin on Golden Dome." },
-
-    { "id": "cantor", "name": "CANTOR FITZGERALD, L.P.", "address": "110 East 59th Street, New York, NY 10022", "notes": "Secretary of Commerce Howard Lutnick's firm; distributes Chips Act funds." },
-    { "id": "affinity", "name": "Affinity Partners GP LP", "address": "Sunny Isles Beach, FL", "notes": "Jared Kushner is managing partner and sits on QXO’s board." },
-
-    { "id": "ice", "name": "Intercontinental Exchange (ICE)", "address": "5660 New Northside Drive, Atlanta, GA 30328", "notes": "Kelly Loeffler co-founded and is tied to BKKT." },
-    { "id": "citadel", "name": "Citadel Advisors LLC", "address": "830 Brickell Plaza, Miami, FL 33131", "notes": "Kenneth Griffin is a major Trump supporter." },
-    { "id": "kelly-loeffler", "name": "Kelly Loeffler", "address": "Atlanta, GA", "notes": "Founder/ex-CEO of Bakkt; current SBA Director." },
-
-    { "id": "jane-street", "name": "JANE STREET GROUP, LLC", "address": "250 Vesey Street, 6th Floor, New York, NY 10281", "notes": "Largest 13F filer for DJT per your notes." },
-    { "id": "zach-witikoff", "name": "Zach Witikoff", "address": "Miami, FL", "notes": "Board member. Father Steve Witikoff is special envoy to the Middle East." },
-
-    { "id": "peter-thiel", "name": "Peter Thiel", "address": "Miami, FL", "notes": "Major Trump supporter financially and operationally." },
-    { "id": "elon-musk", "name": "Elon Musk", "address": "Austin, TX", "notes": "Major Trump supporter." },
-    { "id": "mark-zuckerberg", "name": "Mark Zuckerberg", "address": "1601 Willow Rd, Menlo Park, CA 94025", "notes": "Major Trump supporter." },
-
-    { "id": "vivek", "name": "Vivek Ramaswamy", "address": "Dallas, TX", "notes": "Major Trump supporter." },
-    { "id": "roivant", "name": "Roivant Sciences (as investor)", "address": "151 W 42nd St, New York, NY 10036", "notes": "Owns 57% of IMVT." },
-    { "id": "alpine", "name": "Alpine Global Management, LLC", "address": "New York, NY", "notes": "Owns several companies with links to Trump and allies." },
-
-    { "id": "tether", "name": "Tether Limited", "address": "Road Town, Tortola, British Virgin Islands", "notes": "Large crypto firm backing Trump endeavors." },
-    { "id": "myda", "name": "MYDA Advisors", "address": "Miami, FL", "notes": "Owns several Trump companies." },
-
-    { "id": "trump-jr", "name": "Donald Trump Jr.", "address": "Palm Beach, FL", "notes": "Son of Donald Trump." },
-    { "id": "eric-trump", "name": "Eric Trump", "address": "Palm Beach, FL", "notes": "Son of Donald Trump. Chief Strategy Officer of ABTC." },
-
-    { "id": "anson", "name": "Anson Funds Management LP", "address": "16000 Dallas Parkway, Suite 800, Dallas, TX 75248", "notes": "Owns several companies with links to Trump and allies." },
-
-    { "id": "bill-pulte", "name": "Bill Pulte", "address": "Boca Raton, FL", "notes": "PulteGroup heir; current FHFA Director per your note." }
+    {
+      "id": "ghisallo",
+      "name": "Ghisallo Capital Management LLC",
+      "lat": 30.2672,
+      "lng": -97.7431,
+      "address": "Austin, TX",
+      "notes": "Trump's Secretary of Treasury Scott Bessent seeded this hedge fund."
+    },
+    {
+      "id": "bam",
+      "name": "Balyasny Asset Management L.P.",
+      "lat": 41.8781,
+      "lng": -87.6298,
+      "address": "Chicago, IL",
+      "notes": "Owns several companies with links to Trump and allies."
+    },
+    {
+      "id": "paulson",
+      "name": "PAULSON & CO. INC.",
+      "lat": 40.758,
+      "lng": -73.9855,
+      "address": "New York, NY",
+      "notes": "Econ advisor to Trump during first term."
+    },
+    {
+      "id": "aei",
+      "name": "AE Industrial Partners",
+      "lat": 26.3587,
+      "lng": -80.0831,
+      "address": "Boca Raton, FL",
+      "notes": "The owner AEI has very close proximity to Mar-a-Lago."
+    },
+    {
+      "id": "hudsonbay",
+      "name": "Hudson Bay Capital Management LP",
+      "lat": 41.033,
+      "lng": -73.629,
+      "address": "Greenwich, CT",
+      "notes": "The owner Sander Gerber is on Donald Trump's intelligence advisory board."
+    },
+    {
+      "id": "hoodriver",
+      "name": "Hood River Capital Management LLC",
+      "lat": 45.5152,
+      "lng": -122.6784,
+      "address": "Portland, OR",
+      "notes": "Owns several companies with links to Trump and allies."
+    },
+    {
+      "id": "peter_cannito",
+      "name": "Peter Cannito",
+      "lat": 30.2055,
+      "lng": -81.5829,
+      "address": "Jacksonville, FL",
+      "notes": "The CEO of RDW is promoting the company on Fox News and praised the Trump administration on the Golden Dome."
+    },
+    {
+      "id": "cantor",
+      "name": "CANTOR FITZGERALD, L. P.",
+      "lat": 40.7589,
+      "lng": -73.9712,
+      "address": "New York, NY",
+      "notes": "Secretary of Commerce How Lutnick's son's firm."
+    },
+    {
+      "id": "affinity",
+      "name": "Affinity Partners GP LP",
+      "lat": 25.7617,
+      "lng": -80.1918,
+      "address": "Miami, FL",
+      "notes": "Jared Kusner is the managing partner. He also sits on the board of QXO."
+    },
+    {
+      "id": "ice",
+      "name": "Intercontinental Exchange (ICE)",
+      "lat": 33.749,
+      "lng": -84.388,
+      "address": "Atlanta, GA",
+      "notes": "Kelly Loeffler founded this firm alongside her husband (ICE CEO) and is currently serving as the SBA Director."
+    },
+    {
+      "id": "citadel",
+      "name": "Citadel Advisors LLC",
+      "lat": 25.7617,
+      "lng": -80.1918,
+      "address": "Miami, FL",
+      "notes": "Kenny G is a major Trump supporter."
+    },
+    {
+      "id": "kelly_loeffler",
+      "name": "Kelly Loeffler",
+      "lat": 33.7485,
+      "lng": -84.3915,
+      "address": "Atlanta, GA",
+      "notes": "Founder, ex CEO, SBA Director"
+    },
+    {
+      "id": "jane_street",
+      "name": "JANE STREET GROUP, LLC",
+      "lat": 40.7061,
+      "lng": -74.0092,
+      "address": "New York, NY",
+      "notes": "Largest 13f filer for DJT."
+    },
+    {
+      "id": "zach_witikoff",
+      "name": "Zach Witikoff",
+      "lat": 25.7907,
+      "lng": -80.13,
+      "address": "Miami Beach, FL",
+      "notes": "Board member. Steve Witikoff is father to Zach Witikoff and special envoy to the Middle East."
+    },
+    {
+      "id": "donald_trump_jr",
+      "name": "Donald Trump Jr.",
+      "lat": 26.7153,
+      "lng": -80.0534,
+      "address": "Palm Beach, FL",
+      "notes": "His son."
+    },
+    {
+      "id": "peter_thiel",
+      "name": "Peter Thiel",
+      "lat": 25.7617,
+      "lng": -80.1918,
+      "address": "Miami, FL",
+      "notes": "Major Trump supporter."
+    },
+    {
+      "id": "elon_musk",
+      "name": "Elon Musk",
+      "lat": 30.2672,
+      "lng": -97.7431,
+      "address": "Austin, TX",
+      "notes": "Major Trump supporter."
+    },
+    {
+      "id": "mark_zuckerberg",
+      "name": "Mark Zuckerberg",
+      "lat": 37.4521,
+      "lng": -122.1819,
+      "address": "Menlo Park, CA",
+      "notes": "Major Trump supporter."
+    },
+    {
+      "id": "vivek_ramaswamy",
+      "name": "Vivek Ramaswamy",
+      "lat": 39.9612,
+      "lng": -82.9988,
+      "address": "Columbus, OH",
+      "notes": "Major Trump supporter."
+    },
+    {
+      "id": "alpine_global",
+      "name": "Alpine Global Management, LLC",
+      "lat": 40.755,
+      "lng": -73.9867,
+      "address": "New York, NY",
+      "notes": "Owns several companies with links to Trump and allies."
+    },
+    {
+      "id": "tether",
+      "name": "Tether",
+      "lat": 18.4286,
+      "lng": -64.6185,
+      "address": "Road Town, BVI",
+      "notes": "Large Crypto firm backing Trump endeavors."
+    },
+    {
+      "id": "myda_advisors",
+      "name": "MYDA Advisors",
+      "lat": 40.7484,
+      "lng": -73.9857,
+      "address": "New York, NY",
+      "notes": "Owns several Trump companies."
+    },
+    {
+      "id": "anson_funds",
+      "name": "Anson Funds Management LP",
+      "lat": 43.6532,
+      "lng": -79.3832,
+      "address": "Toronto, ON",
+      "notes": "Owns several companies with links to Trump and allies."
+    },
+    {
+      "id": "arosa_capital",
+      "name": "Arosa Capital Management LP",
+      "lat": 40.759,
+      "lng": -73.9851,
+      "address": "New York, NY",
+      "notes": "Owns several companies with links to Trump and allies."
+    },
+    {
+      "id": "eric_trump",
+      "name": "Eric Trump",
+      "lat": 26.7153,
+      "lng": -80.0534,
+      "address": "Palm Beach, FL",
+      "notes": "His son. Chief Strategy Officer (ABTC)."
+    },
+    {
+      "id": "bill_pulte",
+      "name": "Bill Pulte",
+      "lat": 26.142,
+      "lng": -81.7948,
+      "address": "Naples, FL",
+      "notes": "Federal Housing Finance Authority Director."
+    },
+    {
+      "id": "roiv",
+      "name": "Roivant Sciences (Holder of IMVT)",
+      "lat": 40.758,
+      "lng": -73.9855,
+      "address": "New York, NY",
+      "notes": "Owns 57% of IMVT."
+    }
   ],
   "links": [
     { "investor_id": "ghisallo", "company_id": "NG", "units": 1741510, "instrument": "Shares" },
@@ -183,11 +425,11 @@
     { "investor_id": "paulson", "company_id": "NG", "units": 27238061, "instrument": "Shares" },
 
     { "investor_id": "aei", "company_id": "RDW", "units": 85496745, "instrument": "Shares" },
-    { "investor_id": "hudson-bay", "company_id": "RDW", "units": 131252, "instrument": "Shares" },
-    { "investor_id": "hood-river", "company_id": "RDW", "units": 2221219, "instrument": "Shares" },
-    { "investor_id": "peter-cannito", "company_id": "RDW", "units": 494573, "instrument": "Shares" },
+    { "investor_id": "hudsonbay", "company_id": "RDW", "units": 131252, "instrument": "Shares" },
+    { "investor_id": "hoodriver", "company_id": "RDW", "units": 2221219, "instrument": "Shares" },
+    { "investor_id": "peter_cannito", "company_id": "RDW", "units": 494573, "instrument": "Shares" },
 
-    { "investor_id": "hood-river", "company_id": "QXO", "units": 8302495, "instrument": "Shares" },
+    { "investor_id": "hoodriver", "company_id": "QXO", "units": 8302495, "instrument": "Shares" },
     { "investor_id": "ghisallo", "company_id": "QXO", "units": 2000000, "instrument": "Shares" },
     { "investor_id": "bam", "company_id": "QXO", "units": 5668824, "instrument": "Shares" },
     { "investor_id": "cantor", "company_id": "QXO", "units": 70928, "instrument": "Shares" },
@@ -195,53 +437,64 @@
 
     { "investor_id": "ice", "company_id": "BKKT", "units": 21550595, "instrument": "Shares" },
     { "investor_id": "citadel", "company_id": "BKKT", "units": 1319162, "instrument": "Shares" },
-    { "investor_id": "kelly-loeffler", "company_id": "BKKT" },
+    { "investor_id": "kelly_loeffler", "company_id": "BKKT", "units": null, "instrument": "Shares" },
 
     { "investor_id": "cantor", "company_id": "WOLF", "units": 32494, "instrument": "Shares" },
     { "investor_id": "bam", "company_id": "WOLF", "units": 67270000, "instrument": "Note" },
 
     { "investor_id": "citadel", "company_id": "ALTS", "units": 73677, "instrument": "Shares" },
-    { "investor_id": "jane-street", "company_id": "ALTS", "units": 10061351, "instrument": "Shares" },
-    { "investor_id": "zach-witikoff", "company_id": "ALTS" },
+    { "investor_id": "jane_street", "company_id": "ALTS", "units": 10061351, "instrument": "Shares" },
+    { "investor_id": "zach_witikoff", "company_id": "ALTS", "units": null, "instrument": "Shares" },
 
-    { "investor_id": "trump-jr", "company_id": "PSQH", "units": 697403, "instrument": "Shares" },
-    { "investor_id": "kelly-loeffler", "company_id": "PSQH" },
+    { "investor_id": "donald_trump_jr", "company_id": "PSQH", "units": 697403, "instrument": "Shares" },
+    { "investor_id": "kelly_loeffler", "company_id": "PSQH", "units": null, "instrument": "Shares" },
 
-    { "investor_id": "peter-thiel", "company_id": "PLTR", "units": 70900000, "instrument": "Shares" },
+    { "investor_id": "peter_thiel", "company_id": "PLTR", "units": 70900000, "instrument": "Shares" },
 
-    { "investor_id": "elon-musk", "company_id": "TSLA", "units": 412600000, "instrument": "Shares" },
+    { "investor_id": "elon_musk", "company_id": "TSLA", "units": 412600000, "instrument": "Shares" },
 
-    { "investor_id": "mark-zuckerberg", "company_id": "META", "units": 346000000, "instrument": "Shares" },
+    { "investor_id": "mark_zuckerberg", "company_id": "META", "units": 346000000, "instrument": "Shares" },
 
     { "investor_id": "bam", "company_id": "ROIV", "units": 969979, "instrument": "Shares" },
     { "investor_id": "cantor", "company_id": "ROIV", "units": 350001, "instrument": "Shares" },
-    { "investor_id": "vivek", "company_id": "ROIV", "units": 37284108, "instrument": "Shares" },
+    { "investor_id": "vivek_ramaswamy", "company_id": "ROIV", "units": 37284108, "instrument": "Shares" },
 
     { "investor_id": "bam", "company_id": "IMVT", "units": 197569, "instrument": "Shares" },
-    { "investor_id": "roivant", "company_id": "IMVT", "units": 96650341, "instrument": "Shares" },
-    { "investor_id": "alpine", "company_id": "IMVT", "units": 2626692, "instrument": "Shares" },
+    { "investor_id": "roiv", "company_id": "IMVT", "units": 96650341, "instrument": "Shares" },
+    { "investor_id": "alpine_global", "company_id": "IMVT", "units": 2626692, "instrument": "Shares" },
 
-    { "investor_id": "vivek", "company_id": "BZFD", "units": 3129797, "instrument": "Shares" },
+    { "investor_id": "vivek_ramaswamy", "company_id": "BZFD", "units": 3129797, "instrument": "Shares" },
 
     { "investor_id": "cantor", "company_id": "RUM", "units": 9333817, "instrument": "Shares" },
     { "investor_id": "tether", "company_id": "RUM", "units": 103333333, "instrument": "Shares" },
-    { "investor_id": "myda", "company_id": "RUM", "units": 180000, "instrument": "Calls" },
+    { "investor_id": "myda_advisors", "company_id": "RUM", "units": 180000, "instrument": "Calls" },
 
-    { "investor_id": "jane-street", "company_id": "DJT", "units": 13822035, "instrument": "Shares" },
-    { "investor_id": "alpine", "company_id": "DJT", "units": 1876604, "instrument": "Shares" },
-    { "investor_id": "cantor", "company_id": "DJT", "units": 1839039, "instrument": "Shares" },
-    { "investor_id": "hudson-bay", "company_id": "DJT", "units": 1360808, "instrument": "Shares" },
-    { "investor_id": "anson", "company_id": "DJT", "units": 500001, "instrument": "Shares" },
-    { "investor_id": "bam", "company_id": "DJT", "units": 244162, "instrument": "Shares" },
+    { "investor_id": "jane_street", "company_id": "DJT_DWAC", "units": 13822035, "instrument": "Shares" },
+    { "investor_id": "alpine_global", "company_id": "DJT_DWAC", "units": 1876604, "instrument": "Shares" },
+    { "investor_id": "cantor", "company_id": "DJT_DWAC", "units": 1839039, "instrument": "Shares" },
+    { "investor_id": "hudsonbay", "company_id": "DJT_DWAC", "units": 1360808, "instrument": "Shares" },
+    { "investor_id": "anson_funds", "company_id": "DJT_DWAC", "units": 500001, "instrument": "Shares" },
+    { "investor_id": "bam", "company_id": "DJT_DWAC", "units": 244162, "instrument": "Shares" },
 
-    { "investor_id": "trump-jr", "company_id": "ABTC", "units": 90858814, "instrument": "Shares" },
-    { "investor_id": "eric-trump", "company_id": "ABTC", "units": 90858814, "instrument": "Shares" },
+    { "investor_id": "donald_trump_jr", "company_id": "UMAC", "units": 331580, "instrument": "Shares" },
+    { "investor_id": "myda_advisors", "company_id": "UMAC", "units": 80000, "instrument": "Shares" },
+
+    { "investor_id": "arosa_capital", "company_id": "HOND", "units": 560000, "instrument": "Shares" },
+    { "investor_id": "bam", "company_id": "HOND", "units": 544894, "instrument": "Shares" },
+    { "investor_id": "cantor", "company_id": "HOND", "units": 466287, "instrument": "Shares" },
+    { "investor_id": "myda_advisors", "company_id": "HOND", "units": 300000, "instrument": "Shares" },
+
+    { "investor_id": "bam", "company_id": "CEPO_BSTR", "units": 220409, "instrument": "Shares" },
+    { "investor_id": "alpine_global", "company_id": "CEPO_BSTR", "units": 173560, "instrument": "Shares" },
+
+    { "investor_id": "eric_trump", "company_id": "ABTC", "units": 90858814, "instrument": "Shares" },
+    { "investor_id": "donald_trump_jr", "company_id": "ABTC", "units": 90858814, "instrument": "Shares" },
 
     { "investor_id": "bam", "company_id": "PHM", "units": 807129, "instrument": "Shares" },
-    { "investor_id": "bill-pulte", "company_id": "PHM", "units": 32338034, "instrument": "Shares" }
+    { "investor_id": "bill_pulte", "company_id": "PHM", "units": 32338034, "instrument": "Shares" }
   ],
   "landmarks": [
-    { "name": "Mar-a-Lago", "lat": 26.677043, "lng": -80.036959, "type": "triangle", "url": "https://www.maralagoclub.com/" },
-    { "name": "The White House", "lat": 38.897957, "lng": -77.03656, "type": "star", "url": "https://www.whitehouse.gov/" }
+    { "name": "Mar-a-Lago", "lat": 26.6773, "lng": -80.0395, "type": "triangle" },
+    { "name": "The White House", "lat": 38.8977, "lng": -77.0365, "type": "star" }
   ]
 }

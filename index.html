@@ -44,6 +44,7 @@
     .leaflet-popup-content{color:#0b1220; font-size:.95rem}
     a{color:var(--accent)}
     .svg-icon{filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
+    code.inline{background:#0b1220;padding:2px 6px;border-radius:6px;border:1px solid #374151}
   </style>
 </head>
 <body>
@@ -62,7 +63,7 @@
     </div>
     <div id="stats" style="font-size:.9rem;opacity:.9"></div>
     <div id="companyMeta" style="font-size:.95rem; line-height:1.5; opacity:.95;"></div>
-    <div class="footnote">Data file: <code>data/graph.json</code></div>
+    <div class="footnote">Data: <code class="inline">const DATA = { ... }</code> (embedded below)</div>
   </div>
 
   <div class="legend">
@@ -75,11 +76,56 @@
   <div id="map"></div>
 
   <script>
+  // ---------- Inline data with baked-in coordinates (edit this) ----------
+  const DATA = {
+    companies: [
+      {
+        id: "RDW", ticker: "RDW", name: "Redwire Corporation",
+        desc: "Space infrastructure & components", address: "Jacksonville, FL",
+        lat: 30.2055, lng: -81.5829
+      },
+      {
+        id: "NG", ticker: "NG", name: "NOVAGOLD RESOURCES INC.",
+        desc: "Donlin Gold development", address: "Crooked Creek, AK",
+        lat: 61.5930, lng: -158.1160
+      }
+    ],
+    investors: [
+      {
+        id: "CANTOR", name: "Cantor Fitzgerald",
+        address: "New York, NY", notes: "Broker-dealer & investment bank",
+        lat: 40.7612, lng: -73.9729
+      },
+      {
+        id: "PAULSON", name: "Paulson & Co.",
+        address: "New York, NY", notes: "Event-driven hedge fund",
+        lat: 40.7553, lng: -73.9783
+      },
+      {
+        id: "HUDSONBAY", name: "Hudson Bay Capital",
+        address: "Greenwich, CT", notes: "Multi-strategy",
+        lat: 41.0330, lng: -73.6290
+      }
+    ],
+    // Link an investor to a company; arcs draw immediately on load
+    links: [
+      { investor_id: "CANTOR",  company_id: "RDW", units: "Calls (Q2)",  instrument: "Options" },
+      { investor_id: "HUDSONBAY", company_id: "RDW", units: "Equity",   instrument: "Shares"  },
+      { investor_id: "PAULSON", company_id: "NG",  units: "Equity",   instrument: "Shares"  }
+    ],
+    // Landmarks are just reference pins (kept visible)
+    landmarks: [
+      { id: "MAL", name: "Mar-a-Lago", type: "triangle", lat: 26.6773, lng: -80.0395 },
+      { id: "WH",  name: "The White House", type: "star", lat: 38.8977, lng: -77.0365 }
+    ]
+  };
+  // ----------------------------------------------------------------------
+
   document.addEventListener('DOMContentLoaded', async () => {
     const errBox = document.getElementById('err');
     const okBox  = document.getElementById('ok');
     function showErr(msg){ errBox.textContent = msg; errBox.style.display='block'; }
-    function showOk(msg){ okBox.textContent = msg; okBox.style.display='block'; setTimeout(()=>okBox.style.display='none', 4000); }
+    function showOk(msg){ okBox.textContent = msg; okBox.style.display='block'; setTimeout(()=>okBox.style.display='none', 3000); }
 
     // Base map centered on U.S.
     const map = L.map('map', { worldCopyJump:true }).setView([37.8, -96], 4);
@@ -87,33 +133,18 @@
       maxZoom:19, attribution:'&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    const companyLayer = L.layerGroup().addTo(map);
+    const companyLayer  = L.layerGroup().addTo(map);
     const investorLayer = L.layerGroup().addTo(map);
-    const linkLayer = L.layerGroup().addTo(map);
+    const linkLayer     = L.layerGroup().addTo(map);
     const landmarkLayer = L.layerGroup().addTo(map);
-    const markersById = { company:{}, investor:{} };
+    const markersById   = { company:{}, investor:{} };
 
-    let companies=[], investors=[], links=[], landmarks=[];
-    let focusedIndex=0;
-
-    // ---- Load data.json
-    try{
-      const res = await fetch('data/graph.json', { cache:'no-store' });
-      if(!res.ok) throw new Error(`HTTP ${res.status} loading data/graph.json`);
-      const json = await res.json();
-      companies = json.companies||[];
-      investors = json.investors||[];
-      links     = json.links||[];
-      landmarks = json.landmarks||[];
-    }catch(e){
-      showErr('Could not load data/graph.json. Check the file path/name (case-sensitive) and JSON validity.');
-      console.error(e);
-      return; // Stop right here if the file didn’t load
-    }
-
-    // Geocode anything missing lat/lng
-    await geocodeMissing(companies, 'company');
-    await geocodeMissing(investors, 'investor');
+    // Pull embedded data (no fetch / no geocoding)
+    const companies = DATA.companies || [];
+    const investors = DATA.investors || [];
+    const links     = DATA.links     || [];
+    const landmarks = DATA.landmarks || [];
+    let focusedIndex = 0;
 
     // Build markers
     companyLayer.clearLayers(); investorLayer.clearLayers(); linkLayer.clearLayers(); landmarkLayer.clearLayers();
@@ -139,7 +170,7 @@
       L.marker([l.lat,l.lng],{icon}).bindPopup(landmarkPopup(l)).addTo(landmarkLayer);
     });
 
-    // Populate selector (always—regardless of coords)
+    // Populate selector
     const sel=document.getElementById('companySelect');
     sel.innerHTML = companies.map((c,i)=>`<option value="${i}">${escapeHTML(c.ticker||c.id)} — ${escapeHTML(c.name||'')}</option>`).join('');
     sel.addEventListener('change', e=>{ focusedIndex=+e.target.value; focusCompany(); });
@@ -161,13 +192,14 @@
       linkLayer.clearLayers();
       const c=companies[focusedIndex]; if(!c){ showErr('No companies loaded.'); return; }
 
+      // bump focused company marker
       Object.values(markersById.company).forEach(m=>m.setStyle({radius:7,fillOpacity:.9}));
       const cm=markersById.company[c.id]; if(cm){ cm.setStyle({radius:9,fillOpacity:1}); try{cm.bringToFront();}catch{} }
 
       const showAll=document.getElementById('showAllLinks').checked;
       const subset= showAll ? links : links.filter(l=>l.company_id===c.id);
 
-      let drawn=0;
+      let drawn=0; const bounds=L.latLngBounds([]);
       subset.forEach(lk=>{
         const im=markersById.investor[lk.investor_id];
         const cmk=markersById.company[lk.company_id];
@@ -176,33 +208,13 @@
         L.polyline(arcPoints([a.lat,a.lng],[b.lat,b.lng],0.25),{
           color:getVar('--link'), weight:2, opacity:.9
         }).bindPopup(linkPopup(lk)).addTo(linkLayer);
-        drawn++;
+        bounds.extend(a); bounds.extend(b); drawn++;
       });
 
-      document.getElementById('companyMeta').innerHTML = companyMetaHTML(c) +
-        (drawn?``:`<div style="opacity:.8;margin-top:6px"><em>No arcs for this company yet (missing coords?).</em></div>`);
-    }
+      // Fit to arcs + focused company (keeps things in view at load)
+      if (drawn && bounds.isValid()) map.fitBounds(bounds.pad(0.2), { animate:false });
 
-    async function geocodeMissing(arr, label){
-      const cache=JSON.parse(localStorage.getItem('geocodeCache')||'{}');
-      let hits=0, misses=0;
-      for (const obj of arr){
-        if (obj && (obj.lat==null || obj.lng==null)){
-          const q=obj.address||obj.name; if(!q) { misses++; continue; }
-          if(!cache[q]){
-            try{
-              const url=`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
-              const r=await fetch(url,{headers:{'Accept-Language':'en'}});
-              const d=await r.json();
-              if(d && d[0]) cache[q]={lat:+d[0].lat,lng:+d[0].lon};
-              await new Promise(r=>setTimeout(r,350)); // be gentle
-            }catch(e){ console.warn('Geocode fail:', q, e); }
-          }
-          if(cache[q]){ obj.lat=cache[q].lat; obj.lng=cache[q].lng; hits++; } else { misses++; }
-        }
-      }
-      localStorage.setItem('geocodeCache', JSON.stringify(cache));
-      console.log(`${label}: geocoded ${hits}, missed ${misses}`);
+      document.getElementById('companyMeta').innerHTML = companyMetaHTML(c, subset, investors);
     }
 
     function companyPopup(c){
@@ -210,7 +222,6 @@
       if(c.ticker) lines.push(`<div><strong>Ticker:</strong> ${escapeHTML(c.ticker)}</div>`);
       if(c.desc) lines.push(`<div><strong>Desc:</strong> ${escapeHTML(c.desc)}</div>`);
       if(c.address) lines.push(`<div><strong>Address:</strong> ${escapeHTML(c.address)}</div>`);
-      if(c.long_short) lines.push(`<div><strong>Position:</strong> ${escapeHTML(c.long_short)}</div>`);
       if(c["Potential QPQ"] || c.why) lines.push(`<div><strong>Potential QPQ:</strong> ${escapeHTML(c["Potential QPQ"]||c.why)}</div>`);
       return `<div><h3 style="margin:0 0 6px;font-size:1.05rem;">${escapeHTML(c.name||'Company')}</h3>${lines.join('')}</div>`;
     }
@@ -221,11 +232,25 @@
       return `<div><h3 style="margin:0 0 6px;font-size:1.05rem;">${escapeHTML(i.name||'Investor')}</h3>${lines.join('')}</div>`;
     }
     function linkPopup(lk){
-      const inv=investors.find(x=>x.id===lk.investor_id);
-      const cmp=companies.find(x=>x.id===lk.company_id);
+      const inv=DATA.investors.find(x=>x.id===lk.investor_id);
+      const cmp=DATA.companies.find(x=>x.id===lk.company_id);
       const amt= lk.units!=null ? `<div><strong>Amount:</strong> ${escapeHTML(String(lk.units))} ${escapeHTML(lk.instrument||'')}</div>` : '';
       return `<div><div><strong>Investor:</strong> ${escapeHTML(inv?.name||lk.investor_id)}</div>
                   <div><strong>Company:</strong> ${escapeHTML(cmp?.name||lk.company_id)}</div>${amt}</div>`;
+    }
+    function companyMetaHTML(c, subsetLinks, allInvestors){
+      const invNames = subsetLinks
+        .filter(l=>l.company_id===c.id)
+        .map(l=> allInvestors.find(i=>i.id===l.investor_id)?.name || l.investor_id);
+      return `
+        <div><strong>${escapeHTML(c.name||'Company')}</strong>${c.ticker?` (<code class="inline">${escapeHTML(c.ticker)}</code>)`:''}</div>
+        ${c.desc?`<div>${escapeHTML(c.desc)}</div>`:''}
+        ${c.address?`<div style="opacity:.85">${escapeHTML(c.address)}</div>`:''}
+        <div style="margin-top:6px"><strong>Linked investors:</strong> ${invNames.length?escapeHTML(invNames.join(', ')):'None yet'}</div>
+      `;
+    }
+    function landmarkPopup(l){
+      return `<div><strong>${escapeHTML(l.name||'Landmark')}</strong></div>`;
     }
     function shapeIcon(type,fillColor){
       const tri=`<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,26 2,26" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;

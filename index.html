@@ -1,244 +1,307 @@
-<script>
-  // --- 1) Base map ---
-  const map = L.map('map', { worldCopyJump: true }).setView([20, 0], 2);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Investor ↔ Company Map</title>
 
-  // Layers
-  const companyLayer = L.layerGroup().addTo(map);
-  const investorLayer = L.layerGroup().addTo(map);
-  const linkLayer = L.layerGroup().addTo(map);
-  const landmarkLayer = L.layerGroup().addTo(map);
+    <!-- Leaflet (keep these two lines exactly; no SRI so it won’t get blocked) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  const markersById = { company:{}, investor:{} };
-  let companies = [], investors = [], links = [], landmarks = [];
-  let focusedIndex = 0;
-
-  // --- 2) Load your graph data (now auto-geocodes if lat/lng missing) ---
-  // Schema in data/graph.json:
-  // {
-  //   "companies": [{ id, ticker, name, lat?, lng?, address?, desc?, long_short?, why? }],
-  //   "investors": [{ id, name, lat?, lng?, address?, notes? }],
-  //   "links": [{ investor_id, company_id, units?, instrument? }],
-  //   "landmarks": [{ name, lat, lng, type: "triangle"|"star", url? }]
-  // }
-  async function loadData() {
-    try {
-      const res = await fetch('data/graph.json', { cache: 'no-store' });
-      if (!res.ok) throw new Error('Missing data/graph.json, using sample');
-      const json = await res.json();
-      ({ companies = [], investors = [], links = [], landmarks = [] } = json);
-      await geocodeMissing();   // <— NEW: fill in any missing lat/lng
-      initialize();
-    } catch (err) {
-      console.warn(err.message);
-      // Minimal sample fallback
-      companies = [
-        { id: 'NG', ticker: 'NG', name: 'NOVAGOLD RESOURCES INC.', address: 'PO Box 69, Crooked Creek, AK 99575', desc: 'A goldmine in Alaska', long_short: 'Coming Soon', why: 'Potential public-finance/permits angle.' }
-      ];
-      investors = [
-        { id: 'ghisallo', name: 'Ghisallo Capital Management LLC', address: '240 Newbury St, 2nd Fl, Boston, MA 02116', notes: "Trump's Treasury pick Bessent reportedly seeded this hedge fund." }
-      ];
-      links = [{ investor_id: 'ghisallo', company_id: 'NG', units: 1741510, instrument: 'Shares' }];
-      landmarks = [
-        { name: 'Mar-a-Lago', lat: 26.677043, lng: -80.036959, type: 'triangle', url: 'https://www.maralagoclub.com/' },
-        { name: 'The White House', lat: 38.897957, lng: -77.03656, type: 'star', url: 'https://www.whitehouse.gov/' }
-      ];
-      await geocodeMissing();
-      initialize();
-    }
-  }
-
-  // --- 2a) Lightweight geocoder with localStorage cache ---
-  async function geocodeMissing(){
-    const cache = JSON.parse(localStorage.getItem('geocodeCache') || '{}');
-
-    async function geocodeAddress(query){
-      if (!query) return null;
-      if (cache[query]) return cache[query];
-      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
-      const res = await fetch(url, { headers: { 'Accept-Language': 'en' }});
-      if (!res.ok) return null;
-      const data = await res.json();
-      if (data && data[0]) {
-        const loc = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-        cache[query] = loc;
-        localStorage.setItem('geocodeCache', JSON.stringify(cache));
-        await delay(350); // be gentle to the service
-        return loc;
+    <style>
+      :root{
+        --bg:#0f172a; --panel:#111827cc; --text:#e5e7eb; --accent:#60a5fa;
+        --blue:#3b82f6; /* companies */ --red:#ef4444; /* investors */ --link:#f59e0b; /* arcs */
       }
-      return null;
-    }
-
-    async function fill(obj){
-      if (obj && (obj.lat == null || obj.lng == null)) {
-        const q = obj.address || obj.name;
-        const loc = await geocodeAddress(q);
-        if (loc) { obj.lat = loc.lat; obj.lng = loc.lng; }
+      html,body{height:100%;margin:0}
+      body{
+        background:var(--bg); color:var(--text);
+        font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;
+        font-size:20px; line-height:1.45; /* ≈25% bigger */
       }
-    }
+      #map{height:100vh;width:100%}
 
-    for (const c of companies) await fill(c);
-    for (const i of investors) await fill(i);
-  }
-  const delay = (ms)=>new Promise(r=>setTimeout(r,ms));
+      /* Right control panel */
+      .control-panel{
+        position:fixed; z-index:1000; top:16px; right:12px;
+        background:var(--panel); backdrop-filter:blur(6px);
+        border:1px solid #1f2937; border-radius:16px; padding:12px 14px; min-width:320px;
+        box-shadow:0 8px 24px rgba(0,0,0,.35);
+      }
+      .control-panel h2{font-size:1rem; margin:0 0 8px; font-weight:700}
+      .row{display:flex; align-items:center; gap:10px; margin:8px 0}
+      .row button,.row select{
+        padding:8px 12px; border-radius:10px; border:1px solid #374151; background:#0b1220; color:var(--text);
+        font-size:.95rem; cursor:pointer;
+      }
+      .row label{font-size:.95rem; opacity:.9}
+      .footnote{font-size:.85rem; opacity:.75; margin-top:8px}
 
-  function initialize() {
-    companyLayer.clearLayers(); investorLayer.clearLayers(); linkLayer.clearLayers(); landmarkLayer.clearLayers();
-    markersById.company = {}; markersById.investor = {};
+      /* Legend */
+      .legend{
+        position:fixed; z-index:1000; bottom:12px; left:12px;
+        background:var(--panel); border:1px solid #1f2937; border-radius:12px; padding:10px 12px; font-size:.95rem;
+      }
+      .legend .swatch{display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px}
+      .legend .item{margin-right:12px; white-space:nowrap}
 
-    companies.forEach(c => {
-      if (c.lat == null || c.lng == null) return; // skip if still missing
-      const m = L.circleMarker([c.lat, c.lng], {
-        radius: 7, color: 'white', weight: 1.5, fillColor: getVar('--blue'), fillOpacity: 0.9
-      }).bindPopup(companyPopup(c));
-      m.addTo(companyLayer);
-      markersById.company[c.id] = m;
-    });
-    investors.forEach(i => {
-      if (i.lat == null || i.lng == null) return;
-      const m = L.circleMarker([i.lat, i.lng], {
-        radius: 6, color: 'white', weight: 1, fillColor: getVar('--red'), fillOpacity: 0.9
-      }).bindPopup(investorPopup(i));
-      m.addTo(investorLayer);
-      markersById.investor[i.id] = m;
-    });
+      .leaflet-container{background:#0b1020}
+      .leaflet-control-attribution{background:rgba(17,24,39,.6); color:#cbd5e1; font-size:.8rem}
+      .leaflet-popup-content{color:#0b1220; font-size:.95rem}
+      a{color:var(--accent)}
+      .svg-icon{filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
+    </style>
+  </head>
+  <body>
+    <!-- (Removed the floating page title box as requested) -->
 
-    // Landmarks
-    landmarks.forEach(l => {
-      const icon = shapeIcon(l.type, l.type === 'triangle' ? '#f97316' : '#fbbf24');
-      const m = L.marker([l.lat, l.lng], { icon }).bindPopup(landmarkPopup(l));
-      m.addTo(landmarkLayer);
-    });
+    <!-- Company focus / cycling panel -->
+    <div class="control-panel" id="controls" aria-label="Map controls">
+      <h2>Company Focus</h2>
+      <div class="row">
+        <button id="prevBtn" title="Previous company">◀</button>
+        <select id="companySelect" aria-label="Select company"></select>
+        <button id="nextBtn" title="Next company">▶</button>
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="showAllLinks" /> Show all arcs</label>
+      </div>
+      <div id="companyMeta" style="font-size:.95rem; line-height:1.5; opacity:.95;"></div>
+      <div class="footnote">Data: <code>data/graph.json</code></div>
+    </div>
 
-    // Populate company selector
-    const sel = document.getElementById('companySelect');
-    sel.innerHTML = companies.map((c, idx) => `<option value="${idx}">${escapeHTML(c.ticker || c.id)} — ${escapeHTML(c.name || '')}</option>`).join('');
-    sel.addEventListener('change', (e) => { focusedIndex = Number(e.target.value); focusCompany(); });
-    document.getElementById('prevBtn').onclick = () => { focusedIndex = (focusedIndex - 1 + companies.length) % companies.length; sel.value = focusedIndex; focusCompany(); };
-    document.getElementById('nextBtn').onclick = () => { focusedIndex = (focusedIndex + 1) % companies.length; sel.value = focusedIndex; focusCompany(); };
-    document.getElementById('showAllLinks').addEventListener('change', updateLinksVisibility);
+    <!-- Legend -->
+    <div class="legend">
+      <span class="item"><span class="swatch" style="background:var(--blue)"></span>Company</span>
+      <span class="item"><span class="swatch" style="background:var(--red)"></span>Investor</span>
+      <span class="item">▲ Mar-a-Lago</span>
+      <span class="item">★ White House</span>
+    </div>
 
-    // Initial focus
-    focusCompany();
+    <div id="map" role="region" aria-label="Interactive world map"></div>
 
-    // Fit all markers initially
-    const all = [...Object.values(markersById.company), ...Object.values(markersById.investor)];
-    if (all.length) {
-      const group = L.featureGroup(all);
-      try { map.fitBounds(group.getBounds().pad(0.2)); } catch (_) {}
-    }
-  }
+    <script>
+      document.addEventListener('DOMContentLoaded', async function () {
+        // --- Base map (start centered on U.S.) ---
+        const map = L.map('map', { worldCopyJump: true }).setView([37.8, -96], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-  function focusCompany() {
-    linkLayer.clearLayers();
-    const c = companies[focusedIndex];
-    if (!c) return;
+        // Layers
+        const companyLayer = L.layerGroup().addTo(map);
+        const investorLayer = L.layerGroup().addTo(map);
+        const linkLayer    = L.layerGroup().addTo(map);
+        const landmarkLayer= L.layerGroup().addTo(map);
 
-    Object.values(markersById.company).forEach(m => m.setStyle({ radius: 7, fillOpacity: 0.9 }));
-    const cm = markersById.company[c.id];
-    if (cm) { cm.setStyle({ radius: 9, fillOpacity: 1.0 }); try { cm.bringToFront(); } catch (_) {} }
+        const markersById = { company:{}, investor:{} };
+        let companies = [], investors = [], links = [], landmarks = [];
+        let focusedIndex = 0;
 
-    const showAll = document.getElementById('showAllLinks').checked;
-    const subset = showAll ? links : links.filter(l => l.company_id === c.id);
+        // --- Load data ---
+        try {
+          const res = await fetch('data/graph.json', { cache: 'no-store' });
+          if (!res.ok) throw new Error('Missing data/graph.json, using sample');
+          const json = await res.json();
+          companies  = json.companies  || [];
+          investors  = json.investors  || [];
+          links      = json.links      || [];
+          landmarks  = json.landmarks  || [];
+        } catch (err) {
+          console.warn(err.message);
+          // Fallback sample (kept minimal)
+          companies = [
+            { id:'NG', ticker:'NG', name:'NOVAGOLD RESOURCES INC.', lat:61.869, lng:-158.106,
+              address:'PO Box 69, Crooked Creek, AK 99575', desc:'A goldmine in Alaska',
+              long_short:'Coming Soon', "Potential QPQ":"Public funds could be used to finance the infrastructure to the mine. The US might want to take a stake in the mine for its gold prospects." }
+          ];
+          investors = [
+            { id:'ghisallo', name:'Ghisallo Capital Management LLC', lat:42.349, lng:-71.085,
+              address:'240 Newbury St, 2nd Fl, Boston, MA 02116',
+              notes:"Trump's Treasury pick Bessent reportedly seeded this hedge fund." }
+          ];
+          links = [{ investor_id:'ghisallo', company_id:'NG', units:1741510, instrument:'Shares' }];
+          landmarks = [
+            { name:'Mar-a-Lago', lat:26.677043, lng:-80.036959, type:'triangle', url:'https://www.maralagoclub.com/' },
+            { name:'The White House', lat:38.897957, lng:-77.03656, type:'star', url:'https://www.whitehouse.gov/' }
+          ];
+        }
 
-    subset.forEach(lk => {
-      const im = markersById.investor[lk.investor_id];
-      const cmk = markersById.company[lk.company_id];
-      if (!im || !cmk) return;
-      const a = im.getLatLng();
-      const b = cmk.getLatLng();
-      const arc = L.polyline(arcPoints([a.lat, a.lng], [b.lat, b.lng], 0.25), {
-        color: getVar('--link'), weight: 2, opacity: 0.9
-      }).addTo(linkLayer);
-      arc.bindPopup(linkPopup(lk));
-    });
+        // --- Build markers (expects lat/lng in your JSON) ---
+        companyLayer.clearLayers(); investorLayer.clearLayers(); linkLayer.clearLayers(); landmarkLayer.clearLayers();
+        markersById.company = {}; markersById.investor = {};
 
-    const meta = document.getElementById('companyMeta');
-    meta.innerHTML = companyMetaHTML(c);
+        companies.forEach(c => {
+          if (c.lat == null || c.lng == null) return;
+          const m = L.circleMarker([c.lat, c.lng], {
+            radius: 7, color: 'white', weight: 1.5, fillColor: getVar('--blue'), fillOpacity: 0.9
+          }).bindPopup(companyPopup(c));
+          m.addTo(companyLayer);
+          markersById.company[c.id] = m;
+        });
+        investors.forEach(i => {
+          if (i.lat == null || i.lng == null) return;
+          const m = L.circleMarker([i.lat, i.lng], {
+            radius: 6, color: 'white', weight: 1, fillColor: getVar('--red'), fillOpacity: 0.9
+          }).bindPopup(investorPopup(i));
+          m.addTo(investorLayer);
+          markersById.investor[i.id] = m;
+        });
 
-    const invMarkers = subset
-      .filter(l => l.company_id === c.id)
-      .map(l => markersById.investor[l.investor_id])
-      .filter(Boolean);
-    const focusGroup = L.featureGroup([markersById.company[c.id], ...invMarkers]);
-    try { map.fitBounds(focusGroup.getBounds().pad(0.25)); } catch (_) {}
-  }
+        // Landmarks
+        landmarks.forEach(l => {
+          const icon = shapeIcon(l.type, l.type === 'triangle' ? '#f97316' : '#fbbf24');
+          L.marker([l.lat, l.lng], { icon }).bindPopup(landmarkPopup(l)).addTo(landmarkLayer);
+        });
 
-  function updateLinksVisibility(){ focusCompany(); }
+        // Company selector
+        const sel = document.getElementById('companySelect');
+        sel.innerHTML = companies.map((c, idx) =>
+          `<option value="${idx}">${escapeHTML(c.ticker || c.id)} — ${escapeHTML(c.name || '')}</option>`
+        ).join('');
+        sel.addEventListener('change', e => { focusedIndex = Number(e.target.value); focusCompany(); });
+        document.getElementById('prevBtn').onclick = () => {
+          focusedIndex = (focusedIndex - 1 + companies.length) % companies.length; sel.value = focusedIndex; focusCompany();
+        };
+        document.getElementById('nextBtn').onclick = () => {
+          focusedIndex = (focusedIndex + 1) % companies.length; sel.value = focusedIndex; focusCompany();
+        };
+        document.getElementById('showAllLinks').addEventListener('change', () => focusCompany());
 
-  // --- Popups ---
-  function companyPopup(c){
-    const lines = [];
-    if (c.ticker) lines.push(`<div><strong>Ticker:</strong> ${escapeHTML(c.ticker)}</div>`);
-    if (c.desc) lines.push(`<div><strong>Desc:</strong> ${escapeHTML(c.desc)}</div>`);
-    if (c.address) lines.push(`<div><strong>Address:</strong> ${escapeHTML(c.address)}</div>`);
-    if (c.long_short) lines.push(`<div><strong>Position:</strong> ${escapeHTML(c.long_short)}</div>`);
-    if (c.why) lines.push(`<div><strong>Potential QPQ:</strong> ${escapeHTML(c.why)}</div>`);
-    return `<div><h3 style="margin:0 0 6px;font-size:16px;">${escapeHTML(c.name||'Company')}</h3>${lines.join('')}</div>`;
-  }
-  function investorPopup(i){
-    const lines = [];
-    if (i.address) lines.push(`<div><strong>Address:</strong> ${escapeHTML(i.address)}</div>`);
-    if (i.notes) lines.push(`<div><strong>Connection:</strong> ${escapeHTML(i.notes)}</div>`); // label changed
-    return `<div><h3 style="margin:0 0 6px;font-size:16px;">${escapeHTML(i.name||'Investor')}</h3>${lines.join('')}</div>`;
-  }
-  function linkPopup(lk){
-    const inv = investors.find(x=>x.id===lk.investor_id);
-    const cmp = companies.find(x=>x.company_id===lk.company_id);
-    const amt = lk.units != null ? `<div><strong>Amount:</strong> ${escapeHTML(String(lk.units))} ${escapeHTML(lk.instrument||'')}</div>` : '';
-    return `<div>
-      <div><strong>Investor:</strong> ${escapeHTML(inv?.name||lk.investor_id)}</div>
-      <div><strong>Company:</strong> ${escapeHTML((companies.find(x=>x.id===lk.company_id)||{}).name || lk.company_id)}</div>
-      ${amt}
-    </div>`;
-  }
-  function landmarkPopup(l){
-    const url = l.url ? `<div><a href="${encodeURI(l.url)}" target="_blank" rel="noopener">Website</a></div>` : '';
-    return `<div><h3 style="margin:0 0 6px;font-size:16px;">${escapeHTML(l.name)}</h3>${url}</div>`;
-  }
+        // Initial focus (keeps US view; we do NOT auto-fit all markers here)
+        focusCompany();
 
-  // --- Helpers ---
-  function escapeHTML(str = '') { return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s])); }
-  function getVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-  function shapeIcon(type, fillColor){
-    let svg = '';
-    if (type === 'triangle') {
-      svg = `<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,26 2,26" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;
-    } else {
-      svg = `<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 17.5,10.5 26,11 19,16.5 21,24.5 14,20 7,24.5 9,16.5 2,11 10.5,10.5" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;
-    }
-    return L.divIcon({ html: svg, className: 'custom-shape', iconSize: [28,28], iconAnchor: [14,14] });
-  }
-  function arcPoints(a, b, strength = 0.25, segments = 64){
-    const [lat1, lng1] = a, [lat2, lng2] = b;
-    const dx = lng2 - lng1, dy = lat2 - lat1;
-    const mx = (lat1 + lat2) / 2, my = (lng1 + lng2) / 2;
-    let nx = -dy, ny = dx; const norm = Math.hypot(nx, ny) || 1; nx /= norm; ny /= norm;
-    const dist = Math.hypot(dx, dy);
-    const k = strength * dist;
-    const cx = my + ny * k;
-    const cy = mx + nx * k;
-    const pts = [];
-    for (let t = 0; t <= 1.00001; t += 1/segments){
-      const lng = (1-t)*(1-t)*lng1 + 2*(1-t)*t*cx + t*t*lng2;
-      const lat = (1-t)*(1-t)*lat1 + 2*(1-t)*t*cy + t*t*lat2;
-      pts.push([lat, lng]);
-    }
-    return pts;
-  }
-  function companyMetaHTML(c){
-    const fields = [
-      c.ticker ? `<div><strong>Ticker:</strong> ${escapeHTML(c.ticker)}</div>` : '',
-      c.desc ? `<div><strong>Desc:</strong> ${escapeHTML(c.desc)}</div>` : '',
-      c.long_short ? `<div><strong>Position:</strong> ${escapeHTML(c.long_short)}</div>` : '',
-      c.why ? `<div><strong>Potential QPQ:</strong> ${escapeHTML(c.why)}</div>` : ''
-    ].join('');
-    return fields;
-  }
+        // ---- functions ----
+        function focusCompany() {
+          linkLayer.clearLayers();
+          const c = companies[focusedIndex];
+          if (!c) return;
 
-  // Kick off
-  loadData();
-</script>
+          // highlight this company
+          Object.values(markersById.company).forEach(m => m.setStyle({ radius:7, fillOpacity:0.9 }));
+          const cm = markersById.company[c.id];
+          if (cm) { cm.setStyle({ radius:9, fillOpacity:1.0 }); try { cm.bringToFront(); } catch(_){} }
+
+          // build links (subset unless "show all" is checked)
+          const showAll = document.getElementById('showAllLinks').checked;
+          const subset = showAll ? links : links.filter(l => l.company_id === c.id);
+
+          subset.forEach(lk => {
+            const im = markersById.investor[lk.investor_id];
+            const cmk = markersById.company[lk.company_id];
+            if (!im || !cmk) return;
+            const a = im.getLatLng(), b = cmk.getLatLng();
+            const arc = L.polyline(arcPoints([a.lat, a.lng], [b.lat, b.lng], 0.25), {
+              color:getVar('--link'), weight:2, opacity:0.9
+            }).addTo(linkLayer);
+            arc.bindPopup(linkPopup(lk));
+          });
+
+          // info box
+          document.getElementById('companyMeta').innerHTML = companyMetaHTML(c);
+
+          // zoom to company + its investors (only when not showing all)
+          const invMarkers = subset
+            .filter(l => l.company_id === c.id)
+            .map(l => markersById.investor[l.investor_id])
+            .filter(Boolean);
+          if (cm && !document.getElementById('showAllLinks').checked && invMarkers.length){
+            const fg = L.featureGroup([cm, ...invMarkers]);
+            try { map.fitBounds(fg.getBounds().pad(0.25)); } catch(_){}
+          }
+        }
+
+        // Popups
+        function companyPopup(c){
+          const lines = [];
+          if (c.ticker) lines.push(`<div><strong>Ticker:</strong> ${escapeHTML(c.ticker)}</div>`);
+          if (c.desc)   lines.push(`<div><strong>Desc:</strong> ${escapeHTML(c.desc)}</div>`);
+          if (c.address)lines.push(`<div><strong>Address:</strong> ${escapeHTML(c.address)}</div>`);
+          if (c.long_short) lines.push(`<div><strong>Position:</strong> ${escapeHTML(c.long_short)}</div>`);
+          if (c["Potential QPQ"]) lines.push(`<div><strong>Potential QPQ:</strong> ${escapeHTML(c["Potential QPQ"])}</div>`);
+          return `<div><h3 style="margin:0 0 6px;font-size:1.05rem;">${escapeHTML(c.name || 'Company')}</h3>${lines.join('')}</div>`;
+        }
+        function investorPopup(i){
+          const lines = [];
+          if (i.address) lines.push(`<div><strong>Address:</strong> ${escapeHTML(i.address)}</div>`);
+          if (i.notes)   lines.push(`<div><strong>Connection:</strong> ${escapeHTML(i.notes)}</div>`); // label changed
+          return `<div><h3 style="margin:0 0 6px;font-size:1.05rem;">${escapeHTML(i.name || 'Investor')}</h3>${lines.join('')}</div>`;
+        }
+        function linkPopup(lk){
+          const inv = investors.find(x => x.id === lk.investor_id);
+          const cmp = companies.find(x => x.id === lk.company_id);
+          const amt = lk.units != null ? `<div><strong>Amount:</strong> ${escapeHTML(String(lk.units))} ${escapeHTML(lk.instrument || '')}</div>` : '';
+          return `<div>
+            <div><strong>Investor:</strong> ${escapeHTML(inv?.name || lk.investor_id)}</div>
+            <div><strong>Company:</strong> ${escapeHTML(cmp?.name || lk.company_id)}</div>
+            ${amt}
+          </div>`;
+        }
+
+        // Helpers
+        function escapeHTML(str=''){return String(str).replace(/[&<>\"']/g,s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[s]))}
+        function getVar(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()}
+        function shapeIcon(type, fillColor){
+          let svg='';
+          if(type==='triangle'){
+            svg=`<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,26 2,26" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;
+          }else{ // star
+            svg=`<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 17.5,10.5 26,11 19,16.5 21,24.5 14,20 7,24.5 9,16.5 2,11 10.5,10.5" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;
+          }
+          return L.divIcon({ html:svg, className:'custom-shape', iconSize:[28,28], iconAnchor:[14,14] });
+        }
+        // Quadratic Bezier arc between two lat/lngs
+        function arcPoints(a,b,strength=0.25,segments=64){
+          const [lat1,lng1]=a,[lat2,lng2]=b;
+          const dx=lng2-lng1, dy=lat2-lat1;
+          const mx=(lat1+lat2)/2, my=(lng1+lng2)/2;
+          let nx=-dy, ny=dx; const norm=Math.hypot(nx,ny)||1; nx/=norm; ny/=norm;
+          const dist=Math.hypot(dx,dy), k=strength*dist;
+          const cx=my+ny*k, cy=mx+nx*k;
+          const pts=[];
+          for(let t=0;t<=1.00001;t+=1/segments){
+            const lng=(1-t)*(1-t)*lng1 + 2*(1-t)*t*cx + t*t*lng2;
+            const lat=(1-t)*(1-t)*lat1 + 2*(1-t)*t*cy + t*t*lat2;
+            pts.push([lat,lng]);
+          }
+          return pts;
+        }
+      });
+    </script>
+
+    <!--
+      Put your data file at:  data/graph.json
+
+      Example minimal structure (lat/lng required for pins):
+      {
+        "companies": [
+          {
+            "id": "NG", "ticker": "NG", "name": "NOVAGOLD RESOURCES INC.",
+            "lat": 61.869, "lng": -158.106,
+            "address": "PO Box 69, Crooked Creek, AK 99575",
+            "desc": "A goldmine in Alaska",
+            "long_short": "Coming Soon",
+            "Potential QPQ": "Public funds could be used to finance the infrastructure to the mine. The US might want to take a stake in the mine for its gold prospects."
+          }
+        ],
+        "investors": [
+          {
+            "id": "ghisallo", "name": "Ghisallo Capital Management LLC",
+            "lat": 42.349, "lng": -71.085,
+            "address": "240 Newbury St, 2nd Fl, Boston, MA 02116",
+            "notes": "Connection text here"
+          }
+        ],
+        "links": [
+          { "investor_id": "ghisallo", "company_id": "NG", "units": 1741510, "instrument": "Shares" }
+        ],
+        "landmarks": [
+          { "name": "Mar-a-Lago", "lat": 26.677043, "lng": -80.036959, "type": "triangle" },
+          { "name": "The White House", "lat": 38.897957, "lng": -77.03656,  "type": "star" }
+        ]
+      }
+    -->
+  </body>
+</html>

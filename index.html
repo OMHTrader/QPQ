@@ -61,7 +61,18 @@
     <div class="row">
       <label><input type="checkbox" id="showAllLinks" /> Show all arcs</label>
     </div>
-    <div id="stats" style="font-size:.9rem;opacity:.9"></div>
+
+    <!-- NEW: collapsible instructions -->
+    <details style="margin-top:4px">
+      <summary style="cursor:pointer; opacity:.9">Instructions</summary>
+      <div style="margin-top:6px; font-size:.9rem; opacity:.9">
+        • Use ◀ ▶ or the dropdown to change the focused company.<br>
+        • When “Show all arcs” is off, only the focused company and its investors are shown.<br>
+        • Click any dot to see details. ★ White House, ▲ Mar-a-Lago.
+      </div>
+    </details>
+
+    <div id="stats" style="font-size:.9rem;opacity:.9;margin-top:6px"></div>
     <div id="companyMeta" style="font-size:.95rem; line-height:1.5; opacity:.95;"></div>
     <div class="footnote">Data: <code class="inline">const DATA = { ... }</code> (embedded below)</div>
   </div>
@@ -303,6 +314,17 @@
       `<b>Loaded:</b> ${companies.length} companies (${countWithCoords(companies)} pinned), ` +
       `${investors.length} investors (${countWithCoords(investors)} pinned), ${links.length} links.`;
 
+    // === NEW: helper to toggle marker visibility without removing them ===
+    function setCircleVisibility(marker, visible, isCompany=false){
+      if (!marker) return;
+      marker.setStyle({
+        opacity: visible ? 1 : 0,
+        fillOpacity: visible ? (isCompany ? 1 : 0.9) : 0
+      });
+      const el = marker._path;
+      if (el) el.style.pointerEvents = visible ? 'auto' : 'none';
+    }
+
     focusCompany();
     showOk('Data loaded ✓');
 
@@ -311,14 +333,30 @@
       linkLayer.clearLayers();
       const c=companies[focusedIndex]; if(!c){ showErr('No companies loaded.'); return; }
 
-      // bump focused company marker
+      // bump focused company marker (radius), visibility is handled below
       Object.values(markersById.company).forEach(m=>m.setStyle({radius:7,fillOpacity:.9}));
       const cm=markersById.company[c.id]; if(cm){ cm.setStyle({radius:9,fillOpacity:1}); try{cm.bringToFront();}catch{} }
 
       const showAll=document.getElementById('showAllLinks').checked;
       const subset= showAll ? links : links.filter(l=>l.company_id===c.id);
 
-      let drawn=0; const bounds=L.latLngBounds([]);
+      // === NEW: hide unrelated pins when Show All is OFF ===
+      const relatedInvestorIds = new Set(links.filter(l=>l.company_id===c.id).map(l=>l.investor_id));
+
+      // Companies: only focused unless "show all"
+      Object.entries(markersById.company).forEach(([cid, m])=>{
+        const visible = showAll || cid === c.id;
+        setCircleVisibility(m, visible, true);
+      });
+
+      // Investors: only those connected to focused unless "show all"
+      Object.entries(markersById.investor).forEach(([iid, m])=>{
+        const visible = showAll || relatedInvestorIds.has(iid);
+        setCircleVisibility(m, visible, false);
+      });
+
+      // Draw arcs for the chosen subset and build bounds only from visible items
+      const bounds=L.latLngBounds([]);
       subset.forEach(lk=>{
         const im=markersById.investor[lk.investor_id];
         const cmk=markersById.company[lk.company_id];
@@ -327,11 +365,12 @@
         L.polyline(arcPoints([a.lat,a.lng],[b.lat,b.lng],0.25),{
           color:getVar('--link'), weight:2, opacity:.9
         }).bindPopup(linkPopup(lk)).addTo(linkLayer);
-        bounds.extend(a); bounds.extend(b); drawn++;
+        bounds.extend(a); bounds.extend(b);
       });
 
-      // Fit to arcs + focused company (keeps things in view at load)
-      if (drawn && bounds.isValid()) map.fitBounds(bounds.pad(0.2), { animate:false });
+      // Always include the focused company so it's centered even with 0 arcs
+      if (cm) bounds.extend(cm.getLatLng());
+      if (bounds.isValid()) map.fitBounds(bounds.pad(0.2), { animate:false });
 
       document.getElementById('companyMeta').innerHTML = companyMetaHTML(c, subset, investors);
     }

@@ -59,7 +59,7 @@
       <button id="nextBtn" title="Next company">▶</button>
     </div>
     <div class="row">
-      <label><input type="checkbox" id="showAllLinks" /> Show all arcs</label>
+      <label><input type="checkbox" id="showAllLinks" checked /> Show all arcs</label>
     </div>
     <div id="stats" style="font-size:.9rem;opacity:.9"></div>
     <div id="companyMeta" style="font-size:.95rem; line-height:1.5; opacity:.95;"></div>
@@ -126,7 +126,8 @@
       { id:"ANSON_FUNDS", name:"Anson Funds Management LP", address:"Toronto, ON", notes:"Owns several companies with links to Trump and allies.", lat:43.6532, lng:-79.3832 },
       { id:"AROSA_CAPITAL", name:"Arosa Capital Management LP", address:"New York, NY", notes:"Owns several companies with links to Trump and allies.", lat:40.7590, lng:-73.9851 },
       { id:"ERIC_TRUMP", name:"Eric Trump", address:"Palm Beach, FL", notes:"Trump's son; executive/board roles (user-provided).", lat:26.7153, lng:-80.0534 },
-      { id:"BILL_PULTE", name:"Bill Pulte", address:"Naples, FL", notes:"Federal Housing Finance Authority Director (user-provided).", lat:26.1420, lng:-81.7948 }
+      { id:"BILL_PULTE", name:"Bill Pulte", address:"Naples, FL", notes:"Federal Housing Finance Authority Director (user-provided).", lat:26.1420, lng:-81.7948 },
+      { id:"ROIV", name:"Roivant Sciences (Holder of IMVT)", address:"New York, NY", notes:"Owns ~57% of IMVT.", lat:40.7580, lng:-73.9855 }
     ],
     links: [
       // NG
@@ -285,6 +286,16 @@
     document.getElementById('prevBtn').onclick=()=>{ focusedIndex=(focusedIndex-1+companies.length)%companies.length; sel.value=focusedIndex; focusCompany(); };
     document.getElementById('nextBtn').onclick=()=>{ focusedIndex=(focusedIndex+1)%companies.length; sel.value=focusedIndex; focusCompany(); };
     document.getElementById('showAllLinks').addEventListener('change', ()=>focusCompany());
+
+    // Fit to all pins at first load so you see everything, then focus the first company
+    const __fitAllOnce = () => {
+      const all = [...Object.values(markersById.company), ...Object.values(markersById.investor)];
+      if (all.length) {
+        const group = L.featureGroup(all);
+        try { map.fitBounds(group.getBounds().pad(0.2), { animate:false }); } catch (_) {}
+      }
+    };
+    __fitAllOnce();
 
     // Stats box so you can confirm load
     function countWithCoords(arr){ return arr.filter(x=>x.lat!=null && x.lng!=null).length; }

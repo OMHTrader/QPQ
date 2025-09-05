@@ -27,7 +27,7 @@
 
     .control-panel{ position:fixed; z-index:1000; top:16px; right:12px;
       background:var(--panel); backdrop-filter:blur(6px);
-      border:1px solid #1f2937; border-radius:16px; padding:12px 14px; min-width:340px;
+      border:1px solid #1f2937; border-radius:16px; padding:12px 14px; min-width:360px;
       box-shadow:0 8px 24px rgba(0,0,0,.35); }
     .control-panel h2{font-size:1rem; margin:0 0 8px; font-weight:700}
     .row{display:flex; align-items:center; gap:10px; margin:8px 0}
@@ -79,44 +79,152 @@
   // ---------- Inline data with baked-in coordinates (edit this) ----------
   const DATA = {
     companies: [
-      {
-        id: "RDW", ticker: "RDW", name: "Redwire Corporation",
-        desc: "Space infrastructure & components", address: "Jacksonville, FL",
-        lat: 30.2055, lng: -81.5829
-      },
-      {
-        id: "NG", ticker: "NG", name: "NOVAGOLD RESOURCES INC.",
-        desc: "Donlin Gold development", address: "Crooked Creek, AK",
-        lat: 61.5930, lng: -158.1160
-      }
+      { id:"NG", ticker:"NG", name:"NOVAGOLD RESOURCES INC.", desc:"A goldmine in Alaska", address:"Crooked Creek, AK", lat:61.5930, lng:-158.1160, qpq:"Investors are likely going to use Trump to get federal funds to build the mine, relax federal restrictions on building the mine, and/or use the potential of the mine as a pump and dump." },
+      { id:"RDW", ticker:"RDW", name:"REDWIRE CORPORATION", desc:"Defense Contractor", address:"Jacksonville, FL", lat:30.2055, lng:-81.5829, qpq:"Investors are likely looking to get defense contracts around the Golden Dome." },
+      { id:"QXO", ticker:"QXO", name:"QXO, INC.", desc:"Construction Companies", address:"Miami, FL", lat:25.7617, lng:-80.1918, qpq:"QXO is an investment vehicle with money coming in from foreign companies." },
+      { id:"BKKT", ticker:"BKKT", name:"BKKT", desc:"Crypto Treasury", address:"Alpharetta, GA", lat:34.0754, lng:-84.2941, qpq:"Bakkt is looking to expand as a crypto treasurer listing on multiple exchanges in foreign countries. Likely to see little regulation." },
+      { id:"WOLF", ticker:"WOLF", name:"Wolfspeed", desc:"Semiconductor", address:"Durham, NC", lat:35.9940, lng:-78.8986, qpq:"An American only semiconductor manufacturer. Strong potential for US Gov Investment like INTC." },
+      { id:"ALTS", ticker:"ALTS", name:"ALTS", desc:"Crypto Treasury (WLFI)", address:"Miami Beach, FL", lat:25.7907, lng:-80.1300, qpq:"The Company buys WLFI, one of Trump's crypto currencies with money from issuing stock." },
+      { id:"PSQH", ticker:"PSQH", name:"PSQ Holdings (PublicSquare)", desc:"Conservative Marketplace", address:"West Palm Beach, FL", lat:26.7153, lng:-80.0534, qpq:"Could see favorable promotions." },
+      { id:"PLTR", ticker:"PLTR", name:"Palantir Technologies", desc:"Defense Contractor", address:"Denver, CO", lat:39.7392, lng:-104.9903, qpq:"Provides major data analytics and defense contracting for the Trump administration in both terms." },
+      { id:"TSLA", ticker:"TSLA", name:"Tesla, Inc.", desc:"Car Company", address:"Austin, TX", lat:30.2672, lng:-97.7431, qpq:"Provides major data analytics and defense contracting for Trump's presidency." },
+      { id:"META", ticker:"META", name:"Meta Platforms", desc:"Media", address:"Menlo Park, CA", lat:37.4549, lng:-122.1817, qpq:"Provides major data analytics and message outreach for the Trump campaign" },
+      { id:"ROIV", ticker:"ROIV", name:"Roivant Sciences", desc:"Healthcare", address:"New York, NY", lat:40.7580, lng:-73.9855, qpq:"Could see special treatment by the FDA" },
+      { id:"IMVT", ticker:"IMVT", name:"Immunovant, Inc.", desc:"Healthcare", address:"New York, NY", lat:40.7549, lng:-73.9840, qpq:"Could see special treatment by the FDA" },
+      { id:"BZFD", ticker:"BZFD", name:"BuzzFeed, Inc.", desc:"Media", address:"New York, NY", lat:40.7400, lng:-74.0020, qpq:"Could see special treatment by the FTC" },
+      { id:"RUM", ticker:"RUM", name:"Rumble Inc.", desc:"Hosts Truth Social", address:"Sarasota, FL", lat:27.3364, lng:-82.5307, qpq:"Could see special treatment by the FTC, gov" },
+      { id:"DJT_DWAC", ticker:"DJT/DWAC", name:"Trump Media / DWAC", desc:"Crypto Treasurer", address:"Sarasota, FL", lat:27.3364, lng:-82.5307, qpq:"Could see the crypto strategic reserve initiative." },
+      { id:"UMAC", ticker:"UMAC", name:"Unusual Machines, Inc.", desc:"Drones", address:"San Juan, PR", lat:18.4655, lng:-66.1057, qpq:"An American Drone manufacturer possibly set to receive government contracts." },
+      { id:"HOND", ticker:"HOND", name:"HCM II Acquisition (Energy)", desc:"Energy", address:"Houston, TX", lat:29.7604, lng:-95.3698, qpq:"Recently received approval by the Energy Department as a qualified reactor company." },
+      { id:"CEPO_BSTR", ticker:"CEPO/BSTR", name:"CEPO / BSTR", desc:"Crypto treasurer", address:"New York, NY", lat:40.7128, lng:-74.0060, qpq:"Could see crypto strategic reserve." },
+      { id:"ABTC", ticker:"ABTC", name:"American Blockchain Corp.", desc:"Crypto Miner", address:"Las Vegas, NV", lat:36.1699, lng:-115.1398, qpq:"A miner for the strategic reserve." },
+      { id:"PHM", ticker:"PHM", name:"PulteGroup, Inc.", desc:"Housing Developer", address:"Atlanta, GA", lat:33.8486, lng:-84.3733, qpq:"Could see beneficial housing regulations." }
     ],
     investors: [
-      {
-        id: "CANTOR", name: "Cantor Fitzgerald",
-        address: "New York, NY", notes: "Broker-dealer & investment bank",
-        lat: 40.7612, lng: -73.9729
-      },
-      {
-        id: "PAULSON", name: "Paulson & Co.",
-        address: "New York, NY", notes: "Event-driven hedge fund",
-        lat: 40.7553, lng: -73.9783
-      },
-      {
-        id: "HUDSONBAY", name: "Hudson Bay Capital",
-        address: "Greenwich, CT", notes: "Multi-strategy",
-        lat: 41.0330, lng: -73.6290
-      }
+      { id:"GHISALLO", name:"Ghisallo Capital Management LLC", address:"Austin, TX", notes:"Trump's Secretary of Treasury Scott Bessent seeded this hedge fund.", lat:30.2672, lng:-97.7431 },
+      { id:"BALYASNY", name:"Balyasny Asset Management L.P.", address:"Chicago, IL", notes:"Owns several companies with links to Trump and allies.", lat:41.8781, lng:-87.6298 },
+      { id:"PAULSON", name:"PAULSON & CO. INC.", address:"New York, NY", notes:"Economic advisor to Trump during first term.", lat:40.7580, lng:-73.9855 },
+      { id:"AEI", name:"AE Industrial Partners", address:"Boca Raton, FL", notes:"Owner AEI has very close proximity to Mar-a-Lago.", lat:26.3587, lng:-80.0831 },
+      { id:"HUDSONBAY", name:"Hudson Bay Capital Management LP", address:"Greenwich, CT", notes:"Owner Sander Gerber is on Donald Trump's intelligence advisory board.", lat:41.0330, lng:-73.6290 },
+      { id:"HOODRIVER", name:"Hood River Capital Management LLC", address:"Portland, OR", notes:"Owns several companies with links to Trump and allies.", lat:45.5152, lng:-122.6784 },
+      { id:"PETER_CANNITO", name:"Peter Cannito", address:"Jacksonville, FL", notes:"CEO of RDW; praised the Trump administration re: Golden Dome.", lat:30.2055, lng:-81.5829 },
+      { id:"CANTOR", name:"CANTOR FITZGERALD, L. P.", address:"New York, NY", notes:"Howard Lutnick-led firm; described as having close administration ties.", lat:40.7589, lng:-73.9712 },
+      { id:"AFFINITY", name:"Affinity Partners GP LP", address:"Miami, FL", notes:"Jared Kushner is the managing partner and sits on the board (user-provided).", lat:25.7617, lng:-80.1918 },
+      { id:"ICE", name:"Intercontinental Exchange (ICE)", address:"Atlanta, GA", notes:"Kelly Loeffler co-founded Bakkt with ICE CEO.", lat:33.7490, lng:-84.3880 },
+      { id:"CITADEL", name:"Citadel Advisors LLC", address:"Miami, FL", notes:"Ken Griffin is a major Trump supporter (user-provided).", lat:25.7617, lng:-80.1918 },
+      { id:"KELLY_LOEFFLER", name:"Kelly Loeffler", address:"Atlanta, GA", notes:"Founder/ex-CEO of Bakkt; SBA Director (user-provided).", lat:33.7485, lng:-84.3915 },
+      { id:"JANE_STREET", name:"JANE STREET GROUP, LLC", address:"New York, NY", notes:"Largest 13F filer for DJT (user-provided).", lat:40.7061, lng:-74.0092 },
+      { id:"ZACH_WITIKOFF", name:"Zach Witikoff", address:"Miami Beach, FL", notes:"Board member; son of Steve Witkoff (user-provided).", lat:25.7907, lng:-80.1300 },
+      { id:"DONALD_TRUMP_JR", name:"Donald Trump Jr.", address:"Palm Beach, FL", notes:"Trump's son.", lat:26.7153, lng:-80.0534 },
+      { id:"PETER_THIEL", name:"Peter Thiel", address:"Miami, FL", notes:"Major Trump supporter (user-provided).", lat:25.7617, lng:-80.1918 },
+      { id:"ELON_MUSK", name:"Elon Musk", address:"Austin, TX", notes:"Major Trump supporter (user-provided).", lat:30.2672, lng:-97.7431 },
+      { id:"MARK_ZUCKERBERG", name:"Mark Zuckerberg", address:"Menlo Park, CA", notes:"Major Trump supporter (user-provided).", lat:37.4521, lng:-122.1819 },
+      { id:"VIVEK_RAMASWAMY", name:"Vivek Ramaswamy", address:"Columbus, OH", notes:"Major Trump supporter.", lat:39.9612, lng:-82.9988 },
+      { id:"ALPINE_GLOBAL", name:"Alpine Global Management, LLC", address:"New York, NY", notes:"Owns several companies with links to Trump and allies.", lat:40.7550, lng:-73.9867 },
+      { id:"TETHER", name:"Tether", address:"Road Town, BVI", notes:"Large crypto firm backing Trump endeavors (user-provided).", lat:18.4286, lng:-64.6185 },
+      { id:"MYDA_ADVISORS", name:"MYDA Advisors", address:"New York, NY", notes:"Owns several Trump-linked companies (user-provided).", lat:40.7484, lng:-73.9857 },
+      { id:"ANSON_FUNDS", name:"Anson Funds Management LP", address:"Toronto, ON", notes:"Owns several companies with links to Trump and allies.", lat:43.6532, lng:-79.3832 },
+      { id:"AROSA_CAPITAL", name:"Arosa Capital Management LP", address:"New York, NY", notes:"Owns several companies with links to Trump and allies.", lat:40.7590, lng:-73.9851 },
+      { id:"ERIC_TRUMP", name:"Eric Trump", address:"Palm Beach, FL", notes:"Trump's son; executive/board roles (user-provided).", lat:26.7153, lng:-80.0534 },
+      { id:"BILL_PULTE", name:"Bill Pulte", address:"Naples, FL", notes:"Federal Housing Finance Authority Director (user-provided).", lat:26.1420, lng:-81.7948 }
     ],
-    // Link an investor to a company; arcs draw immediately on load
     links: [
-      { investor_id: "CANTOR",  company_id: "RDW", units: "Calls (Q2)",  instrument: "Options" },
-      { investor_id: "HUDSONBAY", company_id: "RDW", units: "Equity",   instrument: "Shares"  },
-      { investor_id: "PAULSON", company_id: "NG",  units: "Equity",   instrument: "Shares"  }
+      // NG
+      { investor_id:"GHISALLO", company_id:"NG", units:"1,741,510", instrument:"Shares" },
+      { investor_id:"BALYASNY", company_id:"NG", units:"585,351", instrument:"Shares" },
+      { investor_id:"PAULSON", company_id:"NG", units:"27,238,061", instrument:"Shares" },
+
+      // RDW
+      { investor_id:"AEI", company_id:"RDW", units:"85,496,745", instrument:"Shares" },
+      { investor_id:"HUDSONBAY", company_id:"RDW", units:"131,252", instrument:"Shares" },
+      { investor_id:"HOODRIVER", company_id:"RDW", units:"2,221,219", instrument:"Shares" },
+      { investor_id:"PETER_CANNITO", company_id:"RDW", units:"494,573", instrument:"Shares" },
+
+      // QXO
+      { investor_id:"HOODRIVER", company_id:"QXO", units:"8,302,495", instrument:"Shares" },
+      { investor_id:"GHISALLO", company_id:"QXO", units:"2,000,000", instrument:"Shares" },
+      { investor_id:"BALYASNY", company_id:"QXO", units:"5,668,824", instrument:"Shares" },
+      { investor_id:"CANTOR", company_id:"QXO", units:"70,928", instrument:"Shares" },
+      { investor_id:"AFFINITY", company_id:"QXO", units:"32,671,542", instrument:"Shares" },
+
+      // BKKT
+      { investor_id:"ICE", company_id:"BKKT", units:"21,550,595", instrument:"Shares" },
+      { investor_id:"CITADEL", company_id:"BKKT", units:"1,319,162", instrument:"Shares" },
+      { investor_id:"KELLY_LOEFFLER", company_id:"BKKT", units:"Unknown", instrument:"Shares" },
+
+      // WOLF
+      { investor_id:"CANTOR", company_id:"WOLF", units:"32,494", instrument:"Shares" },
+      { investor_id:"BALYASNY", company_id:"WOLF", units:"67,270,000", instrument:"Note" },
+
+      // ALTS
+      { investor_id:"CITADEL", company_id:"ALTS", units:"73,677", instrument:"Shares" },
+      { investor_id:"JANE_STREET", company_id:"ALTS", units:"10,061,351", instrument:"Shares" },
+      { investor_id:"ZACH_WITIKOFF", company_id:"ALTS", units:"Unknown", instrument:"Shares" },
+
+      // PSQH
+      { investor_id:"DONALD_TRUMP_JR", company_id:"PSQH", units:"697,403", instrument:"Shares" },
+      { investor_id:"KELLY_LOEFFLER", company_id:"PSQH", units:"Unknown", instrument:"Shares" },
+
+      // PLTR
+      { investor_id:"PETER_THIEL", company_id:"PLTR", units:"70,900,000", instrument:"Shares" },
+
+      // TSLA
+      { investor_id:"ELON_MUSK", company_id:"TSLA", units:"412,600,000", instrument:"Shares" },
+
+      // META
+      { investor_id:"MARK_ZUCKERBERG", company_id:"META", units:"346,000,000", instrument:"Shares" },
+
+      // ROIV
+      { investor_id:"BALYASNY", company_id:"ROIV", units:"969,979", instrument:"Shares" },
+      { investor_id:"CANTOR", company_id:"ROIV", units:"350,001", instrument:"Shares" },
+      { investor_id:"VIVEK_RAMASWAMY", company_id:"ROIV", units:"37,284,108", instrument:"Shares" },
+
+      // IMVT
+      { investor_id:"BALYASNY", company_id:"IMVT", units:"197,569", instrument:"Shares" },
+      { investor_id:"ROIV", company_id:"IMVT", units:"96,650,341", instrument:"Shares" },
+      { investor_id:"ALPINE_GLOBAL", company_id:"IMVT", units:"2,626,692", instrument:"Shares" },
+
+      // BZFD
+      { investor_id:"VIVEK_RAMASWAMY", company_id:"BZFD", units:"3,129,797", instrument:"Shares" },
+
+      // RUM
+      { investor_id:"CANTOR", company_id:"RUM", units:"9,333,817", instrument:"Shares" },
+      { investor_id:"TETHER", company_id:"RUM", units:"103,333,333", instrument:"Shares" },
+      { investor_id:"MYDA_ADVISORS", company_id:"RUM", units:"180,000", instrument:"Calls" },
+
+      // DJT/DWAC
+      { investor_id:"JANE_STREET", company_id:"DJT_DWAC", units:"13,822,035", instrument:"Shares" },
+      { investor_id:"ALPINE_GLOBAL", company_id:"DJT_DWAC", units:"1,876,604", instrument:"Shares" },
+      { investor_id:"CANTOR", company_id:"DJT_DWAC", units:"1,839,039", instrument:"Shares" },
+      { investor_id:"HUDSONBAY", company_id:"DJT_DWAC", units:"1,360,808", instrument:"Shares" },
+      { investor_id:"ANSON_FUNDS", company_id:"DJT_DWAC", units:"500,001", instrument:"Shares" },
+      { investor_id:"BALYASNY", company_id:"DJT_DWAC", units:"244,162", instrument:"Shares" },
+
+      // UMAC
+      { investor_id:"DONALD_TRUMP_JR", company_id:"UMAC", units:"331,580", instrument:"Shares" },
+      { investor_id:"MYDA_ADVISORS", company_id:"UMAC", units:"80,000", instrument:"Shares" },
+
+      // HOND
+      { investor_id:"AROSA_CAPITAL", company_id:"HOND", units:"560,000", instrument:"Shares" },
+      { investor_id:"BALYASNY", company_id:"HOND", units:"544,894", instrument:"Shares" },
+      { investor_id:"CANTOR", company_id:"HOND", units:"466,287", instrument:"Shares" },
+      { investor_id:"MYDA_ADVISORS", company_id:"HOND", units:"300,000", instrument:"Shares" },
+
+      // CEPO/BSTR
+      { investor_id:"BALYASNY", company_id:"CEPO_BSTR", units:"220,409", instrument:"Shares" },
+      { investor_id:"ALPINE_GLOBAL", company_id:"CEPO_BSTR", units:"173,560", instrument:"Shares" },
+
+      // ABTC
+      { investor_id:"ERIC_TRUMP", company_id:"ABTC", units:"90,858,814", instrument:"Shares" },
+      { investor_id:"DONALD_TRUMP_JR", company_id:"ABTC", units:"90,858,814", instrument:"Shares" },
+
+      // PHM
+      { investor_id:"BALYASNY", company_id:"PHM", units:"807,129", instrument:"Shares" },
+      { investor_id:"BILL_PULTE", company_id:"PHM", units:"32,338,034", instrument:"Shares" }
     ],
-    // Landmarks are just reference pins (kept visible)
     landmarks: [
-      { id: "MAL", name: "Mar-a-Lago", type: "triangle", lat: 26.6773, lng: -80.0395 },
-      { id: "WH",  name: "The White House", type: "star", lat: 38.8977, lng: -77.0365 }
+      { id:"MAL", name:"Mar-a-Lago", type:"triangle", lat:26.6773, lng:-80.0395 },
+      { id:"WH",  name:"The White House", type:"star", lat:38.8977, lng:-77.0365 }
     ]
   };
   // ----------------------------------------------------------------------
@@ -185,93 +293,3 @@
       `${investors.length} investors (${countWithCoords(investors)} pinned), ${links.length} links.`;
 
     focusCompany();
-    showOk('Data loaded ✓');
-
-    // ---- functions
-    function focusCompany(){
-      linkLayer.clearLayers();
-      const c=companies[focusedIndex]; if(!c){ showErr('No companies loaded.'); return; }
-
-      // bump focused company marker
-      Object.values(markersById.company).forEach(m=>m.setStyle({radius:7,fillOpacity:.9}));
-      const cm=markersById.company[c.id]; if(cm){ cm.setStyle({radius:9,fillOpacity:1}); try{cm.bringToFront();}catch{} }
-
-      const showAll=document.getElementById('showAllLinks').checked;
-      const subset= showAll ? links : links.filter(l=>l.company_id===c.id);
-
-      let drawn=0; const bounds=L.latLngBounds([]);
-      subset.forEach(lk=>{
-        const im=markersById.investor[lk.investor_id];
-        const cmk=markersById.company[lk.company_id];
-        if(!im||!cmk) return;
-        const a=im.getLatLng(), b=cmk.getLatLng();
-        L.polyline(arcPoints([a.lat,a.lng],[b.lat,b.lng],0.25),{
-          color:getVar('--link'), weight:2, opacity:.9
-        }).bindPopup(linkPopup(lk)).addTo(linkLayer);
-        bounds.extend(a); bounds.extend(b); drawn++;
-      });
-
-      // Fit to arcs + focused company (keeps things in view at load)
-      if (drawn && bounds.isValid()) map.fitBounds(bounds.pad(0.2), { animate:false });
-
-      document.getElementById('companyMeta').innerHTML = companyMetaHTML(c, subset, investors);
-    }
-
-    function companyPopup(c){
-      const lines=[];
-      if(c.ticker) lines.push(`<div><strong>Ticker:</strong> ${escapeHTML(c.ticker)}</div>`);
-      if(c.desc) lines.push(`<div><strong>Desc:</strong> ${escapeHTML(c.desc)}</div>`);
-      if(c.address) lines.push(`<div><strong>Address:</strong> ${escapeHTML(c.address)}</div>`);
-      if(c["Potential QPQ"] || c.why) lines.push(`<div><strong>Potential QPQ:</strong> ${escapeHTML(c["Potential QPQ"]||c.why)}</div>`);
-      return `<div><h3 style="margin:0 0 6px;font-size:1.05rem;">${escapeHTML(c.name||'Company')}</h3>${lines.join('')}</div>`;
-    }
-    function investorPopup(i){
-      const lines=[];
-      if(i.address) lines.push(`<div><strong>Address:</strong> ${escapeHTML(i.address)}</div>`);
-      if(i.notes)   lines.push(`<div><strong>Connection:</strong> ${escapeHTML(i.notes)}</div>`);
-      return `<div><h3 style="margin:0 0 6px;font-size:1.05rem;">${escapeHTML(i.name||'Investor')}</h3>${lines.join('')}</div>`;
-    }
-    function linkPopup(lk){
-      const inv=DATA.investors.find(x=>x.id===lk.investor_id);
-      const cmp=DATA.companies.find(x=>x.id===lk.company_id);
-      const amt= lk.units!=null ? `<div><strong>Amount:</strong> ${escapeHTML(String(lk.units))} ${escapeHTML(lk.instrument||'')}</div>` : '';
-      return `<div><div><strong>Investor:</strong> ${escapeHTML(inv?.name||lk.investor_id)}</div>
-                  <div><strong>Company:</strong> ${escapeHTML(cmp?.name||lk.company_id)}</div>${amt}</div>`;
-    }
-    function companyMetaHTML(c, subsetLinks, allInvestors){
-      const invNames = subsetLinks
-        .filter(l=>l.company_id===c.id)
-        .map(l=> allInvestors.find(i=>i.id===l.investor_id)?.name || l.investor_id);
-      return `
-        <div><strong>${escapeHTML(c.name||'Company')}</strong>${c.ticker?` (<code class="inline">${escapeHTML(c.ticker)}</code>)`:''}</div>
-        ${c.desc?`<div>${escapeHTML(c.desc)}</div>`:''}
-        ${c.address?`<div style="opacity:.85">${escapeHTML(c.address)}</div>`:''}
-        <div style="margin-top:6px"><strong>Linked investors:</strong> ${invNames.length?escapeHTML(invNames.join(', ')):'None yet'}</div>
-      `;
-    }
-    function landmarkPopup(l){
-      return `<div><strong>${escapeHTML(l.name||'Landmark')}</strong></div>`;
-    }
-    function shapeIcon(type,fillColor){
-      const tri=`<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 26,26 2,26" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;
-      const star=`<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 17.5,10.5 26,11 19,16.5 21,24.5 14,20 7,24.5 9,16.5 2,11 10.5,10.5" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;
-      return L.divIcon({ html:(type==='triangle'?tri:star), className:'custom-shape', iconSize:[28,28], iconAnchor:[14,14] });
-    }
-    function arcPoints(a,b,strength=0.25,segments=64){
-      const [lat1,lng1]=a,[lat2,lng2]=b;
-      const dx=lng2-lng1, dy=lat2-lat1, mx=(lat1+lat2)/2, my=(lng1+lng2)/2;
-      let nx=-dy, ny=dx; const norm=Math.hypot(nx,ny)||1; nx/=norm; ny/=norm;
-      const k=strength*Math.hypot(dx,dy), cx=my+ny*k, cy=mx+nx*k, pts=[];
-      for(let t=0;t<=1.00001;t+=1/segments){
-        const lng=(1-t)*(1-t)*lng1 + 2*(1-t)*t*cx + t*t*lng2;
-        const lat=(1-t)*(1-t)*lat1 + 2*(1-t)*t*cy + t*t*lat2;
-        pts.push([lat,lng]);
-      }
-      return pts;
-    }
-    function escapeHTML(s=''){ return String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[m])) }
-    function getVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-  });
-  </script>
-</body>
-</html>

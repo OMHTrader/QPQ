@@ -10,25 +10,46 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    :root{ --bg:#0f172a; --panel:#111827cc; --text:#e5e7eb; --accent:#60a5fa;
-           --blue:#3b82f6; --red:#ef4444; --link:#f59e0b; }
+    :root{
+      --bg:#0f172a; --panel:#111827cc; --text:#e5e7eb; --accent:#60a5fa;
+      --blue:#3b82f6; --red:#ef4444; --link:#f59e0b;
+      /* height of the fixed instruction banner */
+      --bannerH: 46px;
+    }
     html,body{height:100%;margin:0}
     body{
       background:var(--bg); color:var(--text);
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;
       font-size:20px; line-height:1.45;
     }
-    #map{height:100vh;width:100%}
 
-    .banner{position:fixed;left:12px;top:12px;z-index:1100;
+    /* Forever instruction banner at very top */
+    .instruction-banner{
+      position:fixed; top:0; left:0; right:0; z-index:2000;
+      background:var(--panel);
+      color:var(--text);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+      text-align:center; font-weight:700; letter-spacing:.2px;
+      padding:10px 12px; line-height:26px; user-select:none;
+    }
+
+    /* Map occupies full height below the banner */
+    #map{height:calc(100vh - var(--bannerH)); width:100%; margin-top:var(--bannerH);}
+
+    .banner{
+      position:fixed; left:12px; top:calc(12px + var(--bannerH)); z-index:1100;
       background:#b91c1ccc;color:white;border:1px solid #7f1d1d;border-radius:10px;
-      padding:8px 12px;display:none;max-width:60ch}
+      padding:8px 12px;display:none;max-width:60ch
+    }
     .ok{background:#065f4677;border-color:#065f46;display:none}
 
-    .control-panel{ position:fixed; z-index:1000; top:16px; right:12px;
+    .control-panel{
+      position:fixed; z-index:1000; top:calc(16px + var(--bannerH)); right:12px;
       background:var(--panel); backdrop-filter:blur(6px);
       border:1px solid #1f2937; border-radius:16px; padding:12px 14px; min-width:360px;
-      box-shadow:0 8px 24px rgba(0,0,0,.35); }
+      box-shadow:0 8px 24px rgba(0,0,0,.35);
+    }
     .control-panel h2{font-size:1rem; margin:0 0 8px; font-weight:700}
     .row{display:flex; align-items:center; gap:10px; margin:8px 0}
     .row button,.row select{ padding:8px 12px; border-radius:10px; border:1px solid #374151;
@@ -64,6 +85,11 @@
   </style>
 </head>
 <body>
+  <!-- Forever instruction (pinned) -->
+  <div class="instruction-banner" role="note" aria-live="polite">
+    Click on the circles and arcs
+  </div>
+
   <div id="err" class="banner"></div>
   <div id="ok" class="banner ok"></div>
 

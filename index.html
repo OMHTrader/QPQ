@@ -319,6 +319,9 @@
     };
     __fitAllOnce();
 
+    // Recompute edge-tangent arcs on zoom, but don't refit bounds each time
+    map.on('zoomend', () => focusCompany(false));
+
     // Stats box so you can confirm load
     function countWithCoords(arr){ return arr.filter(x=>x.lat!=null && x.lng!=null).length; }
     document.getElementById('stats').innerHTML =
@@ -340,7 +343,7 @@
     showOk('Data loaded ✓');
 
     // ---- functions
-    function focusCompany(){
+    function focusCompany(fit=true){
       linkLayer.clearLayers();
       const c=companies[focusedIndex]; if(!c){ showErr('No companies loaded.'); return; }
 
@@ -364,22 +367,22 @@
         setCircleVisibility(m, visible, false);
       });
 
-      // Draw arcs for the chosen subset and build bounds
+      // Draw arcs for the chosen subset using edge-to-edge endpoints
       const bounds=L.latLngBounds([]);
       subset.forEach(lk=>{
         const im=markersById.investor[lk.investor_id];
         const cmk=markersById.company[lk.company_id];
         if(!im||!cmk) return;
-        const a=im.getLatLng(), b=cmk.getLatLng();
-        L.polyline(arcPoints([a.lat,a.lng],[b.lat,b.lng],0.25),{
+        const [aEdge, bEdge] = edgeEndpoints(im, cmk);
+        L.polyline(arcPoints([aEdge.lat,aEdge.lng],[bEdge.lat,bEdge.lng],0.25),{
           color:getVar('--link'), weight:6, opacity:.9
         }).bindPopup(linkPopup(lk)).addTo(linkLayer);
-        bounds.extend(a); bounds.extend(b);
+        bounds.extend(aEdge); bounds.extend(bEdge);
       });
 
       // Always include the focused company so it's centered even with 0 arcs
       if (cm) bounds.extend(cm.getLatLng());
-      if (bounds.isValid()) map.fitBounds(bounds.pad(0.2), { animate:false });
+      if (fit && bounds.isValid()) map.fitBounds(bounds.pad(0.2), { animate:false });
 
       document.getElementById('companyMeta').innerHTML = companyMetaHTML(c, subset, investors);
     }
@@ -434,6 +437,23 @@
       const dLat = (r * Math.sin(angle)) / 111320;
       const dLng = (r * Math.cos(angle)) / (111320 * Math.cos(lat*Math.PI/180));
       return [lat + dLat, lng + dLng];
+    }
+
+    // ---- NEW: compute endpoints at the circle edges in screen space
+    function edgeEndpoints(m1, m2){
+      const p1 = map.latLngToLayerPoint(m1.getLatLng());
+      const p2 = map.latLngToLayerPoint(m2.getLatLng());
+      const dist = p1.distanceTo(p2);
+      if (!dist) return [m1.getLatLng(), m2.getLatLng()];
+
+      const dx = (p2.x - p1.x) / dist, dy = (p2.y - p1.y) / dist;
+      const r1 = (m1.getRadius?.() ?? m1.options.radius ?? 0) + ((m1.options.weight||0)/2);
+      const r2 = (m2.getRadius?.() ?? m2.options.radius ?? 0) + ((m2.options.weight||0)/2);
+
+      const p1e = L.point(p1.x + dx * r1, p1.y + dy * r1);
+      const p2e = L.point(p2.x - dx * r2, p2.y - dy * r2);
+
+      return [ map.layerPointToLatLng(p1e), map.layerPointToLatLng(p2e) ];
     }
 
     // Quadratic bezier for arcs

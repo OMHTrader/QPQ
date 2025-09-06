@@ -46,13 +46,21 @@
     .svg-icon{filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
     code.inline{background:#0b1220;padding:2px 6px;border-radius:6px;border:1px solid #374151}
 
-    /* Compact mode for the control panel */
-    .collapse-btn{ position:absolute; top:8px; right:8px; background:#0b1220; border:1px solid #374151; color:var(--text); border-radius:8px; padding:4px 8px; cursor:pointer; font-size:.9rem; }
-    .control-panel.collapsed{ min-width:260px; padding:10px 12px; }
-    .control-panel.collapsed h2{ display:none; }
-    .control-panel.collapsed .only-when-expanded{ display:none !important; }
-    .control-panel.collapsed .row{ margin:0; }
-    .control-panel.collapsed .row select{ width:100%; }
+    /* Details/summary collapse styling */
+    .control-panel details { position: relative; }
+    .control-panel summary { list-style: none; display:flex; align-items:center; gap:10px; cursor:pointer; }
+    .control-panel summary::-webkit-details-marker { display:none; } /* hide default triangle */
+    .summary-bar { background:#0b1220; border:1px solid #374151; border-radius:10px; padding:8px 10px; }
+    .summary-bar .title { font-weight:700; font-size:1rem; }
+    .summary-bar .chev { margin-left:auto; opacity:.8; }
+    .summary-bar select { flex:1 1 auto; min-width:160px; }
+
+    /* When collapsed, only the summary row (with the ticker) is visible */
+    #panelToggle:not([open]) .row,
+    #panelToggle:not([open]) details,
+    #panelToggle:not([open]) .footnote,
+    #panelToggle:not([open]) #stats,
+    #panelToggle:not([open]) #companyMeta { display:none !important; }
   </style>
 </head>
 <body>
@@ -60,31 +68,36 @@
   <div id="ok" class="banner ok"></div>
 
   <div class="control-panel" id="controls">
-    <button id="collapseBtn" class="collapse-btn" title="Toggle compact panel" aria-expanded="true">▾</button>
-    <h2>Company Focus</h2>
-    <div class="row">
-      <button id="prevBtn" class="only-when-expanded" title="Previous company">◀</button>
-      <select id="companySelect" aria-label="Select company"></select>
-      <button id="nextBtn" class="only-when-expanded" title="Next company">▶</button>
-    </div>
-    <div class="row only-when-expanded">
-      <label><input type="checkbox" id="showAllLinks" /> Show all arcs</label>
-    </div>
+    <details id="panelToggle" open>
+      <summary class="summary-bar" aria-label="Toggle panel">
+        <span class="title">Company Focus</span>
+        <select id="companySelect" aria-label="Select company"></select>
+        <span class="chev" aria-hidden="true">▾</span>
+      </summary>
 
-    <!-- Collapsible instructions -->
-    <details class="only-when-expanded" style="margin-top:4px">
-      <summary style="cursor:pointer; opacity:.9">Instructions</summary>
-      <div style="margin-top:6px; font-size:.9rem; opacity:.9">
-        • Use ◀ ▶ or the dropdown to change the focused company.<br>
-        • When “Show all arcs” is off, only the focused company and its investors are shown.<br>
-        • Click any dot to see details. Investor, Company, ★ White House, ▲ Mar-a-Lago.<br>
-        • Click any arc to see the relationship.
+      <div class="row">
+        <button id="prevBtn" title="Previous company">◀</button>
+        <button id="nextBtn" title="Next company">▶</button>
       </div>
-    </details>
 
-    <div id="stats" class="only-when-expanded" style="font-size:.9rem;opacity:.9;margin-top:6px"></div>
-    <div id="companyMeta" class="only-when-expanded" style="font-size:.95rem; line-height:1.5; opacity:.95;"></div>
-    <div class="footnote only-when-expanded">Data: <code class="inline">const DATA = { ... }</code> (embedded below)</div>
+      <div class="row">
+        <label><input type="checkbox" id="showAllLinks" /> Show all arcs</label>
+      </div>
+
+      <details style="margin-top:4px">
+        <summary style="cursor:pointer; opacity:.9">Instructions</summary>
+        <div style="margin-top:6px; font-size:.9rem; opacity:.9">
+          • Use ◀ ▶ or the dropdown to change the focused company.<br>
+          • When “Show all arcs” is off, only the focused company and its investors are shown.<br>
+          • Click any dot to see details. Investor, Company, ★ White House, ▲ Mar-a-Lago.<br>
+          • Click any arc to see the relationship.
+        </div>
+      </details>
+
+      <div id="stats" style="font-size:.9rem;opacity:.9;margin-top:6px"></div>
+      <div id="companyMeta" style="font-size:.95rem; line-height:1.5; opacity:.95;"></div>
+      <div class="footnote">Data: <code class="inline">const DATA = { ... }</code> (embedded below)</div>
+    </details>
   </div>
 
   <div class="legend">
@@ -97,7 +110,7 @@
   <div id="map"></div>
 
   <script>
-  // ---------- Inline data with baked-in coordinates (edit this) ----------
+  // ---------- Inline data with baked-in coordinates ----------
   const DATA = {
     companies: [
       { id:"NG", ticker:"NG", name:"NOVAGOLD RESOURCES INC.", desc:"A goldmine in Alaska", address:"Crooked Creek, AK", lat:61.5930, lng:-158.1160, qpq:"Investors are likely going to use Trump to get federal funds to build the mine, relax federal restrictions on building the mine, and/or use the potential of the mine as a pump and dump." },
@@ -148,73 +161,58 @@
       { id:"AROSA_CAPITAL", name:"Arosa Capital Management LP", address:"120 W 45th St, Ste 3700, New York, NY 10036", notes:"Owns several companies with links to Trump and allies.", lat:40.7564, lng:-73.9837 },
       { id:"ERIC_TRUMP", name:"Eric Trump", address:"Palm Beach, FL", notes:"Trump's son; executive/board roles.", lat:26.7153, lng:-80.0534 },
       { id:"BILL_PULTE", name:"Bill Pulte", address:"Naples, FL", notes:"Federal Housing Finance Authority Director.", lat:26.1420, lng:-81.7948 },
-      { id:"ROIV", name:"Roivant Sciences (Holder of IMVT)", address:"151 W 42nd St, 15th Fl, New York, NY 10036", notes:"Owns ~57% of IMVT.", lat:40.7563, lng:-73.9865 }   
+      { id:"ROIV", name:"Roivant Sciences (Holder of IMVT)", address:"151 W 42nd St, 15th Fl, New York, NY 10036", notes:"Owns ~57% of IMVT.", lat:40.7563, lng:-73.9865 }
     ],
     links: [
-      // NG
       { investor_id:"GHISALLO", company_id:"NG", units:"1,741,510", instrument:"Shares" },
       { investor_id:"BALYASNY", company_id:"NG", units:"585,351", instrument:"Shares" },
       { investor_id:"PAULSON", company_id:"NG", units:"27,238,061", instrument:"Shares" },
 
-      // RDW
       { investor_id:"AEI", company_id:"RDW", units:"85,496,745", instrument:"Shares" },
       { investor_id:"HUDSONBAY", company_id:"RDW", units:"131,252", instrument:"Shares" },
       { investor_id:"HOODRIVER", company_id:"RDW", units:"2,221,219", instrument:"Shares" },
       { investor_id:"PETER_CANNITO", company_id:"RDW", units:"494,573", instrument:"Shares" },
 
-      // QXO
       { investor_id:"HOODRIVER", company_id:"QXO", units:"8,302,495", instrument:"Shares" },
       { investor_id:"GHISALLO", company_id:"QXO", units:"2,000,000", instrument:"Shares" },
       { investor_id:"BALYASNY", company_id:"QXO", units:"5,668,824", instrument:"Shares" },
       { investor_id:"CANTOR", company_id:"QXO", units:"70,928", instrument:"Shares" },
       { investor_id:"AFFINITY", company_id:"QXO", units:"32,671,542", instrument:"Shares" },
 
-      // BKKT
       { investor_id:"ICE", company_id:"BKKT", units:"21,550,595", instrument:"Shares" },
       { investor_id:"CITADEL", company_id:"BKKT", units:"1,319,162", instrument:"Shares" },
       { investor_id:"KELLY_LOEFFLER", company_id:"BKKT", units:"Unknown", instrument:"Shares" },
 
-      // WOLF
       { investor_id:"CANTOR", company_id:"WOLF", units:"32,494", instrument:"Shares" },
       { investor_id:"BALYASNY", company_id:"WOLF", units:"67,270,000", instrument:"Note" },
 
-      // ALTS
       { investor_id:"CITADEL", company_id:"ALTS", units:"73,677", instrument:"Shares" },
       { investor_id:"JANE_STREET", company_id:"ALTS", units:"10,061,351", instrument:"Shares" },
       { investor_id:"ZACH_WITIKOFF", company_id:"ALTS", units:"Unknown", instrument:"Shares" },
 
-      // PSQH
       { investor_id:"DONALD_TRUMP_JR", company_id:"PSQH", units:"697,403", instrument:"Shares" },
       { investor_id:"KELLY_LOEFFLER", company_id:"PSQH", units:"Unknown", instrument:"Shares" },
 
-      // PLTR
       { investor_id:"PETER_THIEL", company_id:"PLTR", units:"70,900,000", instrument:"Shares" },
 
-      // TSLA
       { investor_id:"ELON_MUSK", company_id:"TSLA", units:"412,600,000", instrument:"Shares" },
 
-      // META
       { investor_id:"MARK_ZUCKERBERG", company_id:"META", units:"346,000,000", instrument:"Shares" },
 
-      // ROIV
       { investor_id:"BALYASNY", company_id:"ROIV", units:"969,979", instrument:"Shares" },
       { investor_id:"CANTOR", company_id:"ROIV", units:"350,001", instrument:"Shares" },
       { investor_id:"VIVEK_RAMASWAMY", company_id:"ROIV", units:"37,284,108", instrument:"Shares" },
 
-      // IMVT
       { investor_id:"BALYASNY", company_id:"IMVT", units:"197,569", instrument:"Shares" },
       { investor_id:"ROIV", company_id:"IMVT", units:"96,650,341", instrument:"Shares" },
       { investor_id:"ALPINE_GLOBAL", company_id:"IMVT", units:"2,626,692", instrument:"Shares" },
 
-      // BZFD
       { investor_id:"VIVEK_RAMASWAMY", company_id:"BZFD", units:"3,129,797", instrument:"Shares" },
 
-      // RUM
       { investor_id:"CANTOR", company_id:"RUM", units:"9,333,817", instrument:"Shares" },
       { investor_id:"TETHER", company_id:"RUM", units:"103,333,333", instrument:"Shares" },
       { investor_id:"MYDA_ADVISORS", company_id:"RUM", units:"180,000", instrument:"Calls" },
 
-      // DJT/DWAC
       { investor_id:"JANE_STREET", company_id:"DJT_DWAC", units:"13,822,035", instrument:"Shares" },
       { investor_id:"ALPINE_GLOBAL", company_id:"DJT_DWAC", units:"1,876,604", instrument:"Shares" },
       { investor_id:"CANTOR", company_id:"DJT_DWAC", units:"1,839,039", instrument:"Shares" },
@@ -222,25 +220,20 @@
       { investor_id:"ANSON_FUNDS", company_id:"DJT_DWAC", units:"500,001", instrument:"Shares" },
       { investor_id:"BALYASNY", company_id:"DJT_DWAC", units:"244,162", instrument:"Shares" },
 
-      // UMAC
       { investor_id:"DONALD_TRUMP_JR", company_id:"UMAC", units:"331,580", instrument:"Shares" },
       { investor_id:"MYDA_ADVISORS", company_id:"UMAC", units:"80,000", instrument:"Shares" },
 
-      // HOND
       { investor_id:"AROSA_CAPITAL", company_id:"HOND", units:"560,000", instrument:"Shares" },
       { investor_id:"BALYASNY", company_id:"HOND", units:"544,894", instrument:"Shares" },
       { investor_id:"CANTOR", company_id:"HOND", units:"466,287", instrument:"Shares" },
       { investor_id:"MYDA_ADVISORS", company_id:"HOND", units:"300,000", instrument:"Shares" },
 
-      // CEPO/BSTR
       { investor_id:"BALYASNY", company_id:"CEPO_BSTR", units:"220,409", instrument:"Shares" },
       { investor_id:"ALPINE_GLOBAL", company_id:"CEPO_BSTR", units:"173,560", instrument:"Shares" },
 
-      // ABTC
       { investor_id:"ERIC_TRUMP", company_id:"ABTC", units:"90,858,814", instrument:"Shares" },
       { investor_id:"DONALD_TRUMP_JR", company_id:"ABTC", units:"90,858,814", instrument:"Shares" },
 
-      // PHM
       { investor_id:"BALYASNY", company_id:"PHM", units:"807,129", instrument:"Shares" },
       { investor_id:"BILL_PULTE", company_id:"PHM", units:"32,338,034", instrument:"Shares" }
     ],
@@ -276,21 +269,23 @@
     const landmarks = DATA.landmarks || [];
     let focusedIndex = 0;
 
-    // Build markers
+    // Build markers (with small deterministic jitter to reduce overlap)
     companyLayer.clearLayers(); investorLayer.clearLayers(); linkLayer.clearLayers(); landmarkLayer.clearLayers();
     markersById.company={}; markersById.investor={};
 
     companies.forEach(c=>{
       if (c.lat==null || c.lng==null) return;
-      const m=L.circleMarker([c.lat,c.lng],{
-        radius:14,color:'white',weight:1.5,fillColor:getVar('--blue'),fillOpacity:.9
+      const [jLat,jLng] = jitterLatLng(c.lat,c.lng,150,`C_${c.id}`);
+      const m=L.circleMarker([jLat,jLng],{
+        radius:14,color:'white',weight:1.5,fillColor:getVar('--blue'),fillOpacity:.95
       }).bindPopup(companyPopup(c));
       m.addTo(companyLayer); markersById.company[c.id]=m;
     });
     investors.forEach(i=>{
       if (i.lat==null || i.lng==null) return;
-      const m=L.circleMarker([i.lat,i.lng],{
-        radius:6,color:'white',weight:1,fillColor:getVar('--red'),fillOpacity:.9
+      const [jLat,jLng] = jitterLatLng(i.lat,i.lng,150,`I_${i.id}`);
+      const m=L.circleMarker([jLat,jLng],{
+        radius:9,color:'white',weight:1,fillColor:getVar('--red'),fillOpacity:.95
       }).bindPopup(investorPopup(i));
       m.addTo(investorLayer); markersById.investor[i.id]=m;
     });
@@ -303,27 +298,16 @@
     // Populate selector
     const sel=document.getElementById('companySelect');
     sel.innerHTML = companies.map((c,i)=>`<option value="${i}">${escapeHTML(c.ticker||c.id)} — ${escapeHTML(c.name||'')}</option>`).join('');
+
+    // Prevent the select (inside <summary>) from toggling the details element
+    const panelToggle = document.getElementById('panelToggle');
+    sel.addEventListener('mousedown', e => e.stopPropagation());
+    sel.addEventListener('click', e => e.stopPropagation());
+
     sel.addEventListener('change', e=>{ focusedIndex=+e.target.value; focusCompany(); });
     document.getElementById('prevBtn').onclick=()=>{ focusedIndex=(focusedIndex-1+companies.length)%companies.length; sel.value=focusedIndex; focusCompany(); };
     document.getElementById('nextBtn').onclick=()=>{ focusedIndex=(focusedIndex+1)%companies.length; sel.value=focusedIndex; focusCompany(); };
     document.getElementById('showAllLinks').addEventListener('change', ()=>focusCompany());
-
-    // — Collapse / expand toggle —
-    const panel = document.getElementById('controls');
-    const collapseBtn = document.getElementById('collapseBtn');
-    collapseBtn.addEventListener('click', () => {
-      panel.classList.toggle('collapsed');
-      const collapsed = panel.classList.contains('collapsed');
-      collapseBtn.setAttribute('aria-expanded', String(!collapsed));
-      collapseBtn.textContent = collapsed ? '▸' : '▾';
-      localStorage.setItem('panelCollapsed', collapsed ? '1' : '0');
-    });
-    // Restore previous state on load
-    if (localStorage.getItem('panelCollapsed') === '1') {
-      panel.classList.add('collapsed');
-      collapseBtn.setAttribute('aria-expanded','false');
-      collapseBtn.textContent = '▸';
-    }
 
     // Fit to all pins at first load so you see everything, then focus the first company
     const __fitAllOnce = () => {
@@ -341,12 +325,12 @@
       `<b>Loaded:</b> ${companies.length} companies (${countWithCoords(companies)} pinned), ` +
       `${investors.length} investors (${countWithCoords(investors)} pinned), ${links.length} links.`;
 
-    // === helper to toggle marker visibility without removing them ===
+    // Helper to toggle marker visibility without removing them
     function setCircleVisibility(marker, visible, isCompany=false){
       if (!marker) return;
       marker.setStyle({
         opacity: visible ? 1 : 0,
-        fillOpacity: visible ? (isCompany ? 1 : 0.9) : 0
+        fillOpacity: visible ? (isCompany ? 1 : 0.95) : 0
       });
       const el = marker._path;
       if (el) el.style.pointerEvents = visible ? 'auto' : 'none';
@@ -360,29 +344,27 @@
       linkLayer.clearLayers();
       const c=companies[focusedIndex]; if(!c){ showErr('No companies loaded.'); return; }
 
-      // bump focused company marker (FOCUSED is larger)
-      Object.values(markersById.company).forEach(m=>m.setStyle({radius:12,fillOpacity:.9}));
-      const cm=markersById.company[c.id]; if(cm){ cm.setStyle({radius:16,fillOpacity:1}); try{cm.bringToFront();}catch{} }
+      // sizes/opacity reset, then bump focused
+      Object.values(markersById.company).forEach(m=>m.setStyle({radius:14,fillOpacity:.95}));
+      const cm=markersById.company[c.id]; if(cm){ cm.setStyle({radius:18,fillOpacity:1}); try{cm.bringToFront();}catch{} }
 
       const showAll=document.getElementById('showAllLinks').checked;
       const subset= showAll ? links : links.filter(l=>l.company_id===c.id);
 
-      // hide unrelated pins when Show All is OFF
+      // Hide unrelated pins when Show All is OFF
       const relatedInvestorIds = new Set(links.filter(l=>l.company_id===c.id).map(l=>l.investor_id));
 
-      // Companies: only focused unless "show all"
       Object.entries(markersById.company).forEach(([cid, m])=>{
         const visible = showAll || cid === c.id;
         setCircleVisibility(m, visible, true);
       });
 
-      // Investors: only those connected to focused unless "show all"
       Object.entries(markersById.investor).forEach(([iid, m])=>{
         const visible = showAll || relatedInvestorIds.has(iid);
         setCircleVisibility(m, visible, false);
       });
 
-      // Draw arcs for the chosen subset and build bounds only from visible items
+      // Draw arcs for the chosen subset and build bounds
       const bounds=L.latLngBounds([]);
       subset.forEach(lk=>{
         const im=markersById.investor[lk.investor_id];
@@ -442,8 +424,8 @@
       const star=`<svg class="svg-icon" width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg"><polygon points="14,2 17.5,10.5 26,11 19,16.5 21,24.5 14,20 7,24.5 9,16.5 2,11 10.5,10.5" fill="${fillColor}" stroke="white" stroke-width="1.5"/></svg>`;
       return L.divIcon({ html:(type==='triangle'?tri:star), className:'custom-shape', iconSize:[28,28], iconAnchor:[14,14] });
     }
-    
-    // (Optional) jitter util left here if you want to de-overlap further
+
+    // Small deterministic jitter (meters) to separate overlapping markers
     function jitterLatLng(lat, lng, meters=200, seedStr='') {
       let seed = 0; for (let i=0;i<seedStr.length;i++) seed = (seed*31 + seedStr.charCodeAt(i))>>>0;
       function rand(){ seed = (1664525*seed + 1013904223)>>>0; return (seed>>>0)/4294967296; }
@@ -453,6 +435,8 @@
       const dLng = (r * Math.cos(angle)) / (111320 * Math.cos(lat*Math.PI/180));
       return [lat + dLat, lng + dLng];
     }
+
+    // Quadratic bezier for arcs
     function arcPoints(a,b,strength=0.25,segments=64){
       const [lat1,lng1]=a,[lat2,lng2]=b;
       const dx=lng2-lng1, dy=lat2-lat1, mx=(lat1+lat2)/2, my=(lng1+lng2)/2;

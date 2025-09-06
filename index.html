@@ -45,6 +45,16 @@
     a{color:var(--accent)}
     .svg-icon{filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
     code.inline{background:#0b1220;padding:2px 6px;border-radius:6px;border:1px solid #374151}
+
+    /* Compact mode for the control panel */
+    .collapse-btn{ position:absolute; top:8px; right:8px; background:#0b1220; border:1px solid #374151; color:var(--text); border-radius:8px; padding:4px 8px; cursor:pointer; font-size:.9rem; }
+    .control-panel.collapsed{ min-width:260px; padding:10px 12px; }
+    .control-panel.collapsed h2{ display:none; }
+    .control-panel.collapsed .only-when-expanded{ display:none !important; }
+    .control-panel.collapsed .row{ margin:0; }
+    .control-panel.collapsed .row select{ width:100%; }
+    </style>
+
   </style>
 </head>
 <body>
@@ -52,7 +62,6 @@
   <div id="ok" class="banner ok"></div>
 
   <div class="control-panel" id="controls">
-  <button id="collapseBtn" class="collapse-btn" title="Toggle compact panel" aria-expanded="true">▾</button>
     <h2>Company Focus</h2>
     <div class="row">
       <button id="prevBtn" title="Previous company">◀</button>

@@ -364,7 +364,7 @@
         if(!im||!cmk) return;
         const a=im.getLatLng(), b=cmk.getLatLng();
         L.polyline(arcPoints([a.lat,a.lng],[b.lat,b.lng],0.25),{
-          color:getVar('--link'), weight:10, opacity:.9
+          color:getVar('--link'), weight:6 opacity:.9
         }).bindPopup(linkPopup(lk)).addTo(linkLayer);
         bounds.extend(a); bounds.extend(b);
       });

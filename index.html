@@ -159,7 +159,8 @@
       { id:"CEPO_BSTR", ticker:"CEPO/BSTR", name:"CEPO / BSTR", desc:"Crypto treasurer", address:"New York, NY", lat:40.7128, lng:-74.0060, qpq:"Could see crypto strategic reserve." },
       { id:"ABTC", ticker:"ABTC", name:"American Blockchain Corp.", desc:"Crypto Miner", address:"Las Vegas, NV", lat:36.1699, lng:-115.1398, qpq:"A miner for the strategic reserve." },
       { id:"PHM", ticker:"PHM", name:"PulteGroup, Inc.", desc:"Housing Developer", address:"Atlanta, GA", lat:33.8486, lng:-84.3733, qpq:"Could see beneficial housing regulations." },
-      { id:"IONQ", ticker:"IONQ", name:"IONQ", desc:"Defense Contractor", address:"Maryland, MD", lat:38.989697, lng:-76.937759, qpq:"Received DARPA Quantum Benchmark Initiative and deployed April 2025 Quantum Computing to AF research lab"}
+      { id:"IONQ", ticker:"IONQ", name:"IONQ", desc:"Defense Contractor", address:"Maryland, MD", lat:38.989697, lng:-76.937759, qpq:"Received DARPA Quantum Benchmark Initiative and deployed April 2025 Quantum Computing to AF research lab"},
+      { id:"SARO", ticker:"SARO", name:"StandardAero, Inc.", desc:"Defense Contractor", address:"Scottsdale, AZ", lat:33.5337135, lng:-111.926285, qpq:"Could see beneficial defense contracts."}
     ],
     investors: [
       { id:"GHISALLO", name:"Ghisallo Capital Management LLC", address:"240 Newbury St, 2nd Fl, Boston, MA 02116", notes:"Trump's Secretary of Treasury Scott Bessent seeded this hedge fund.", lat:42.3490, lng:-71.0850 },
@@ -189,7 +190,8 @@
       { id:"ERIC_TRUMP", name:"Eric Trump", address:"Palm Beach, FL", notes:"Trump's son; executive/board roles.", lat:26.7153, lng:-80.0534 },
       { id:"BILL_PULTE", name:"Bill Pulte", address:"Naples, FL", notes:"Federal Housing Finance Authority Director.", lat:26.1420, lng:-81.7948 },
       { id:"ROIV", name:"Roivant Sciences (Holder of IMVT)", address:"151 W 42nd St, 15th Fl, New York, NY 10036", notes:"Owns ~57% of IMVT.", lat:40.7563, lng:-73.9865 },
-      { id:"Cerberus", name:"Cerberus Capital Management", address:"2850 Tigertail Ave Suite 550. Miami, FL 33133", notes:"Trump's Deputy Secretary of Defense's children own this fund", lat:25.730036, lng:-80.239037 }
+      { id:"Cerberus", name:"Cerberus Capital Management", address:"2850 Tigertail Ave Suite 550. Miami, FL 33133", notes:"Trump's Deputy Secretary of Defense's children own this fund", lat:25.730036, lng:-80.239037 },
+      { id:"CG", name:"The Carlyle Group Inc.", address:"1001 Pennsylvania Avenue NW, Suite 220 South, Washington, DC 20004", notes:"Caryle Group has a major stake in SARO. But Rubenstein was recently removed by trump in a Kennedy nonprofit.", lat:38.895000, lng:-77.027000 }
     ],
     links: [
       { investor_id:"GHISALLO", company_id:"NG", units:"1,741,510", instrument:"Shares" },
@@ -265,7 +267,12 @@
       { investor_id:"DONALD_TRUMP_JR", company_id:"ABTC", units:"90,858,814", instrument:"Shares" },
 
       { investor_id:"BALYASNY", company_id:"PHM", units:"807,129", instrument:"Shares" },
-      { investor_id:"BILL_PULTE", company_id:"PHM", units:"32,338,034", instrument:"Shares" }
+      { investor_id:"BILL_PULTE", company_id:"PHM", units:"32,338,034", instrument:"Shares" },
+      
+      { investor_id:"CG", company_id:"SARO", units:"152,673,891", instrument:"Shares" },
+      { investor_id:"HUDSONBAY", company_id:"SARO", units:"237,351",    instrument:"Shares" },
+      { investor_id:"BALYASNY",  company_id:"SARO", units:"2,289,653",  instrument:"Shares" },
+      { investor_id:"GHISALLO",  company_id:"SARO", units:"2,162,869",  instrument:"Shares" }
     ],
     landmarks: [
       { id:"MAL", name:"Mar-a-Lago", type:"triangle", lat:26.6773, lng:-80.0395 },
